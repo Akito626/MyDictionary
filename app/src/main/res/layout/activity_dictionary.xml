@@ -4,26 +4,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DictionaryActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".DictionaryActivity">
 
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_dictionary"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/border"
-        android:layout_margin="5dp">
+        android:layout_margin="5dp"
+        android:background="@drawable/border">
 
         <androidx.appcompat.widget.SearchView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="5dp"
-            app:queryHint="単語検索"/>
+            app:queryHint="単語検索" />
     </FrameLayout>
 
     <LinearLayout
@@ -35,35 +35,35 @@
             android:id="@+id/word_list_text"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_margin="5dp"
             android:layout_weight="0.3"
-            android:textSize="25sp"
+            android:background="#dddddd"
+            android:gravity="center"
             android:text="単語一覧"
             android:textColor="@color/black"
-            android:layout_margin="5dp"
-            android:gravity="center"
-            android:background="#dddddd"/>
+            android:textSize="25sp" />
 
         <TextView
             android:id="@+id/index_text"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_margin="5dp"
             android:layout_weight="0.3"
-            android:textSize="25sp"
+            android:gravity="center"
             android:text="索引"
             android:textColor="@color/black"
-            android:layout_margin="5dp"
-            android:gravity="center"/>
+            android:textSize="25sp" />
 
         <TextView
             android:id="@+id/tag_text"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_margin="5dp"
             android:layout_weight="0.3"
-            android:textSize="25sp"
+            android:gravity="center"
             android:text="タグ"
             android:textColor="@color/black"
-            android:layout_margin="5dp"
-            android:gravity="center"/>
+            android:textSize="25sp" />
     </LinearLayout>
 
     <FrameLayout
@@ -74,73 +74,595 @@
             android:id="@+id/word_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="invisible"/>
+            android:visibility="visible" />
 
-        <TableLayout
-            android:id="@+id/index_table_layout"
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="visible">
+            android:fillViewport="true">
 
-            <TableRow
+            <TableLayout
+                android:id="@+id/index_table_layout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:visibility="invisible">
 
-                <Button
-                    android:id="@+id/button1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.2"
-                    android:text="あ"
-                    android:autoSizeTextType="uniform"
-                    android:textColor="@color/black"
-                    android:backgroundTint="#dddddd"
-                    android:layout_margin="5dp"/>
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-                <Button
-                    android:id="@+id/button2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.2"
-                    android:text="い"
-                    android:autoSizeTextType="uniform"
-                    android:textColor="@color/black"
-                    android:backgroundTint="#dddddd"
-                    android:layout_margin="5dp"/>
+                    <Button
+                        android:id="@+id/button1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.2"
+                        android:autoSizeTextType="uniform"
+                        android:backgroundTint="#dddddd"
+                        android:text="あ"
+                        android:textColor="@color/black" />
 
-                <Button
-                    android:id="@+id/button3"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.2"
-                    android:text="う"
-                    android:autoSizeTextType="uniform"
-                    android:textColor="@color/black"
-                    android:backgroundTint="#dddddd"
-                    android:layout_margin="5dp"/>
+                    <Button
+                        android:id="@+id/button2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.2"
+                        android:autoSizeTextType="uniform"
+                        android:backgroundTint="#dddddd"
+                        android:text="い"
+                        android:textColor="@color/black" />
 
-                <Button
-                    android:id="@+id/button4"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.2"
-                    android:text="え"
-                    android:autoSizeTextType="uniform"
-                    android:textColor="@color/black"
-                    android:backgroundTint="#dddddd"
-                    android:layout_margin="5dp"/>
+                    <Button
+                        android:id="@+id/button3"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.2"
+                        android:autoSizeTextType="uniform"
+                        android:backgroundTint="#dddddd"
+                        android:text="う"
+                        android:textColor="@color/black" />
 
-                <Button
-                    android:id="@+id/button5"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.2"
-                    android:text="お"
-                    android:autoSizeTextType="uniform"
-                    android:textColor="@color/black"
-                    android:backgroundTint="#dddddd"
-                    android:layout_margin="5dp"/>
-            </TableRow>
-        </TableLayout>
+                    <Button
+                        android:id="@+id/button4"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.2"
+                        android:autoSizeTextType="uniform"
+                        android:backgroundTint="#dddddd"
+                        android:text="え"
+                        android:textColor="@color/black" />
+
+                    <Button
+                        android:id="@+id/button5"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.2"
+                        android:autoSizeTextType="uniform"
+                        android:backgroundTint="#dddddd"
+                        android:text="お"
+                        android:textColor="@color/black" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <Button
+                        android:id="@+id/button6"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.2"
+                        android:autoSizeTextType="uniform"
+                        android:backgroundTint="#dddddd"
+                        android:text="か"
+                        android:textColor="@color/black" />
+
+                    <Button
+                        android:id="@+id/button7"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.2"
+                        android:autoSizeTextType="uniform"
+                        android:backgroundTint="#dddddd"
+                        android:text="き"
+                        android:textColor="@color/black" />
+
+                    <Button
+                        android:id="@+id/button8"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.2"
+                        android:autoSizeTextType="uniform"
+                        android:backgroundTint="#dddddd"
+                        android:text="く"
+                        android:textColor="@color/black" />
+
+                    <Button
+                        android:id="@+id/button9"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.2"
+                        android:autoSizeTextType="uniform"
+                        android:backgroundTint="#dddddd"
+                        android:text="け"
+                        android:textColor="@color/black" />
+
+                    <Button
+                        android:id="@+id/button10"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.2"
+                        android:autoSizeTextType="uniform"
+                        android:backgroundTint="#dddddd"
+                        android:text="こ"
+                        android:textColor="@color/black" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <Button
+                        android:id="@+id/button11"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.2"
+                        android:autoSizeTextType="uniform"
+                        android:backgroundTint="#dddddd"
+                        android:text="さ"
+                        android:textColor="@color/black" />
+
+                    <Button
+                        android:id="@+id/button12"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.2"
+                        android:autoSizeTextType="uniform"
+                        android:backgroundTint="#dddddd"
+                        android:text="し"
+                        android:textColor="@color/black" />
+
+                    <Button
+                        android:id="@+id/button13"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.2"
+                        android:autoSizeTextType="uniform"
+                        android:backgroundTint="#dddddd"
+                        android:text="す"
+                        android:textColor="@color/black" />
+
+                    <Button
+                        android:id="@+id/button14"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.2"
+                        android:autoSizeTextType="uniform"
+                        android:backgroundTint="#dddddd"
+                        android:text="せ"
+                        android:textColor="@color/black" />
+
+                    <Button
+                        android:id="@+id/button15"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.2"
+                        android:autoSizeTextType="uniform"
+                        android:backgroundTint="#dddddd"
+                        android:text="そ"
+                        android:textColor="@color/black" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <Button
+                        android:id="@+id/button16"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.2"
+                        android:autoSizeTextType="uniform"
+                        android:backgroundTint="#dddddd"
+                        android:text="た"
+                        android:textColor="@color/black" />
+
+                    <Button
+                        android:id="@+id/button17"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.2"
+                        android:autoSizeTextType="uniform"
+                        android:backgroundTint="#dddddd"
+                        android:text="ち"
+                        android:textColor="@color/black" />
+
+                    <Button
+                        android:id="@+id/button18"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.2"
+                        android:autoSizeTextType="uniform"
+                        android:backgroundTint="#dddddd"
+                        android:text="つ"
+                        android:textColor="@color/black" />
+
+                    <Button
+                        android:id="@+id/button19"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.2"
+                        android:autoSizeTextType="uniform"
+                        android:backgroundTint="#dddddd"
+                        android:text="て"
+                        android:textColor="@color/black" />
+
+                    <Button
+                        android:id="@+id/button20"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.2"
+                        android:autoSizeTextType="uniform"
+                        android:backgroundTint="#dddddd"
+                        android:text="と"
+                        android:textColor="@color/black" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <Button
+                        android:id="@+id/button21"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.2"
+                        android:autoSizeTextType="uniform"
+                        android:backgroundTint="#dddddd"
+                        android:text="な"
+                        android:textColor="@color/black" />
+
+                    <Button
+                        android:id="@+id/button22"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.2"
+                        android:autoSizeTextType="uniform"
+                        android:backgroundTint="#dddddd"
+                        android:text="に"
+                        android:textColor="@color/black" />
+
+                    <Button
+                        android:id="@+id/button23"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.2"
+                        android:autoSizeTextType="uniform"
+                        android:backgroundTint="#dddddd"
+                        android:text="ぬ"
+                        android:textColor="@color/black" />
+
+                    <Button
+                        android:id="@+id/button24"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.2"
+                        android:autoSizeTextType="uniform"
+                        android:backgroundTint="#dddddd"
+                        android:text="ね"
+                        android:textColor="@color/black" />
+
+                    <Button
+                        android:id="@+id/button25"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.2"
+                        android:autoSizeTextType="uniform"
+                        android:backgroundTint="#dddddd"
+                        android:text="の"
+                        android:textColor="@color/black" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <Button
+                        android:id="@+id/button26"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.2"
+                        android:autoSizeTextType="uniform"
+                        android:backgroundTint="#dddddd"
+                        android:text="は"
+                        android:textColor="@color/black" />
+
+                    <Button
+                        android:id="@+id/button27"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.2"
+                        android:autoSizeTextType="uniform"
+                        android:backgroundTint="#dddddd"
+                        android:text="ひ"
+                        android:textColor="@color/black" />
+
+                    <Button
+                        android:id="@+id/button28"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.2"
+                        android:autoSizeTextType="uniform"
+                        android:backgroundTint="#dddddd"
+                        android:text="ふ"
+                        android:textColor="@color/black" />
+
+                    <Button
+                        android:id="@+id/button29"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.2"
+                        android:autoSizeTextType="uniform"
+                        android:backgroundTint="#dddddd"
+                        android:text="へ"
+                        android:textColor="@color/black" />
+
+                    <Button
+                        android:id="@+id/button30"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.2"
+                        android:autoSizeTextType="uniform"
+                        android:backgroundTint="#dddddd"
+                        android:text="ほ"
+                        android:textColor="@color/black" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <Button
+                        android:id="@+id/button31"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.2"
+                        android:autoSizeTextType="uniform"
+                        android:backgroundTint="#dddddd"
+                        android:text="ま"
+                        android:textColor="@color/black" />
+
+                    <Button
+                        android:id="@+id/button32"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.2"
+                        android:autoSizeTextType="uniform"
+                        android:backgroundTint="#dddddd"
+                        android:text="み"
+                        android:textColor="@color/black" />
+
+                    <Button
+                        android:id="@+id/button33"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.2"
+                        android:autoSizeTextType="uniform"
+                        android:backgroundTint="#dddddd"
+                        android:text="む"
+                        android:textColor="@color/black" />
+
+                    <Button
+                        android:id="@+id/button34"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.2"
+                        android:autoSizeTextType="uniform"
+                        android:backgroundTint="#dddddd"
+                        android:text="め"
+                        android:textColor="@color/black" />
+
+                    <Button
+                        android:id="@+id/button35"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.2"
+                        android:autoSizeTextType="uniform"
+                        android:backgroundTint="#dddddd"
+                        android:text="も"
+                        android:textColor="@color/black" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <Button
+                        android:id="@+id/button36"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.2"
+                        android:autoSizeTextType="uniform"
+                        android:backgroundTint="#dddddd"
+                        android:text="や"
+                        android:textColor="@color/black" />
+
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.2" />
+
+                    <Button
+                        android:id="@+id/button37"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.2"
+                        android:autoSizeTextType="uniform"
+                        android:backgroundTint="#dddddd"
+                        android:text="ゆ"
+                        android:textColor="@color/black" />
+
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.2" />
+
+                    <Button
+                        android:id="@+id/button38"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.2"
+                        android:autoSizeTextType="uniform"
+                        android:backgroundTint="#dddddd"
+                        android:text="よ"
+                        android:textColor="@color/black" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <Button
+                        android:id="@+id/button39"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.2"
+                        android:autoSizeTextType="uniform"
+                        android:backgroundTint="#dddddd"
+                        android:text="ら"
+                        android:textColor="@color/black" />
+
+                    <Button
+                        android:id="@+id/button40"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.2"
+                        android:autoSizeTextType="uniform"
+                        android:backgroundTint="#dddddd"
+                        android:text="り"
+                        android:textColor="@color/black" />
+
+                    <Button
+                        android:id="@+id/button41"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.2"
+                        android:autoSizeTextType="uniform"
+                        android:backgroundTint="#dddddd"
+                        android:text="る"
+                        android:textColor="@color/black" />
+
+                    <Button
+                        android:id="@+id/button42"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.2"
+                        android:autoSizeTextType="uniform"
+                        android:backgroundTint="#dddddd"
+                        android:text="れ"
+                        android:textColor="@color/black" />
+
+                    <Button
+                        android:id="@+id/button43"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.2"
+                        android:autoSizeTextType="uniform"
+                        android:backgroundTint="#dddddd"
+                        android:text="ろ"
+                        android:textColor="@color/black" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <Button
+                        android:id="@+id/button44"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.2"
+                        android:autoSizeTextType="uniform"
+                        android:backgroundTint="#dddddd"
+                        android:text="わ"
+                        android:textColor="@color/black" />
+
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.2" />
+
+                    <Button
+                        android:id="@+id/button45"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.2"
+                        android:autoSizeTextType="uniform"
+                        android:backgroundTint="#dddddd"
+                        android:text="を"
+                        android:textColor="@color/black" />
+
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.2" />
+
+                    <Button
+                        android:id="@+id/button46"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.2"
+                        android:autoSizeTextType="uniform"
+                        android:backgroundTint="#dddddd"
+                        android:text="ん"
+                        android:textColor="@color/black" />
+                </TableRow>
+            </TableLayout>
+        </ScrollView>
     </FrameLayout>
 </LinearLayout>
