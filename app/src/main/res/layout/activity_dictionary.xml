@@ -77,15 +77,16 @@
             android:visibility="visible" />
 
         <ScrollView
+            android:id="@+id/index_scroll_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fillViewport="true">
+            android:fillViewport="true"
+            android:visibility="invisible">
 
             <TableLayout
                 android:id="@+id/index_table_layout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="invisible">
+                android:layout_height="match_parent">
 
                 <TableRow
                     android:layout_width="match_parent"
@@ -664,5 +665,11 @@
                 </TableRow>
             </TableLayout>
         </ScrollView>
+
+        <ListView
+            android:id="@+id/tag_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible" />
     </FrameLayout>
 </LinearLayout>
