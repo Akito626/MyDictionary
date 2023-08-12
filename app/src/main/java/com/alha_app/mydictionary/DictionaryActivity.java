@@ -220,6 +220,13 @@ public class DictionaryActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        loadDB();
+    }
+
     private void prepareList() {
         listData.clear();
         for (int i = 0; i < wordList.size(); i++) {
@@ -240,6 +247,7 @@ public class DictionaryActivity extends AppCompatActivity {
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
+            myDictionary.setWordId(wordList.get(position).getId());
             myDictionary.setWord(wordList.get(position).getWord());
             myDictionary.setWordKana(wordList.get(position).getKana());
             myDictionary.setWordDetail(wordList.get(position).getDetail());
