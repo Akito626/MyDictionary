@@ -23,7 +23,6 @@ import com.alha_app.mydictionary.database.DictionaryEntity;
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final Handler handler = new Handler();
     private List<Map<String, Object>> listData = new ArrayList<>();
+    private SimpleAdapter adapter;
     private List<DictionaryEntity> dictionaryList = new ArrayList<>();
     private MyDictionary myDictionary;
 
@@ -80,7 +80,14 @@ public class MainActivity extends AppCompatActivity {
                 myDictionary.setTitle(titleText.getText().toString());
                 myDictionary.setDetail(detailText.getText().toString());
                 dictionaryList.add(entity);
-                saveDB();
+
+                Map<String, Object> listItem = new HashMap<>();
+                listItem.put("list_title_text", entity.getTitle());
+                listItem.put("list_detail_text", entity.getDetail());
+                listData.add(listItem);
+                adapter.notifyDataSetChanged();
+
+                saveDB(entity);
                 dialog.dismiss();
             });
             dialog.show();
@@ -101,13 +108,14 @@ public class MainActivity extends AppCompatActivity {
         }
 
         ListView listView = findViewById(R.id.list_dictionary);
-        listView.setAdapter(new SimpleAdapter(
+        adapter = new SimpleAdapter(
                 this,
                 listData,
                 R.layout.dictionary_list_item,
                 new String[]{"list_title_text", "list_detail_text"},
                 new int[] {R.id.list_title_text, R.id.list_detail_text}
-        ));
+        );
+        listView.setAdapter(adapter);
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
             myDictionary.setId(dictionaryList.get(position).getId());
@@ -117,20 +125,14 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void saveDB(){
+    private void saveDB(DictionaryEntity entity){
         executor.execute(() -> {
             AppDatabase db = Room.databaseBuilder(getApplication(),
                     AppDatabase.class, "DICTIONARY_DATA").build();
             DictionaryDao dao = db.dictionaryDao();
-            dao.deleteAll();
-            dictionaryList.sort(Comparator.comparing(DictionaryEntity::getId));
-            for(int i = 0; i < dictionaryList.size(); i++){
-                dictionaryList.get(i).setId(i);
-                dao.insert(dictionaryList.get(i));
-            }
+            dao.insert(entity);
 
             handler.post(() -> {
-                prepareList();
                 startActivity(new Intent(getApplication(), DictionaryActivity.class));
             });
         });

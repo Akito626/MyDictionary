@@ -5,7 +5,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.room.Room;
 
 import android.app.Dialog;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,19 +15,15 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alha_app.mydictionary.database.AppDatabase;
-import com.alha_app.mydictionary.database.DictionaryDao;
-import com.alha_app.mydictionary.database.DictionaryEntity;
 import com.alha_app.mydictionary.database.WordDao;
 import com.alha_app.mydictionary.database.WordEntity;
-import com.google.android.gms.oss.licenses.OssLicensesActivity;
-import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,20 +53,32 @@ public class DictionaryActivity extends AppCompatActivity {
         TextView wordListText = findViewById(R.id.word_list_text);
         TextView indexText = findViewById(R.id.index_text);
         TextView tagText = findViewById(R.id.tag_text);
+        ListView wordList = findViewById(R.id.word_list);
+        TableLayout indexTable = findViewById(R.id.index_table_layout);
+
         wordListText.setOnClickListener(v -> {
             wordListText.setBackgroundColor(Color.parseColor("#dddddd"));
             indexText.setBackgroundColor(Color.parseColor("#00000000"));
             tagText.setBackgroundColor(Color.parseColor("#00000000"));
+
+            wordList.setVisibility(View.VISIBLE);
+            indexTable.setVisibility(View.INVISIBLE);
         });
         indexText.setOnClickListener(v -> {
             wordListText.setBackgroundColor(Color.parseColor("#00000000"));
             indexText.setBackgroundColor(Color.parseColor("#dddddd"));
             tagText.setBackgroundColor(Color.parseColor("#00000000"));
+
+            wordList.setVisibility(View.INVISIBLE);
+            indexTable.setVisibility(View.VISIBLE);
         });
         tagText.setOnClickListener(v -> {
             wordListText.setBackgroundColor(Color.parseColor("#00000000"));
             indexText.setBackgroundColor(Color.parseColor("#00000000"));
             tagText.setBackgroundColor(Color.parseColor("#dddddd"));
+
+            wordList.setVisibility(View.INVISIBLE);
+            indexTable.setVisibility(View.INVISIBLE);
         });
 
         loadDB();
@@ -91,6 +98,7 @@ public class DictionaryActivity extends AppCompatActivity {
             Dialog dialog = new Dialog(this);
             dialog.setContentView(R.layout.add_word_dialog);
             dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+            dialog.setCancelable(false);
 
             Button tagButton = dialog.findViewById(R.id.tag_button);
             tagButton.setOnClickListener(v -> {});
