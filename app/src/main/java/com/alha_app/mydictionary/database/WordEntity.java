@@ -1,18 +1,20 @@
 package com.alha_app.mydictionary.database;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "WORD_DATA")
 public class WordEntity {
+    @NonNull
     @PrimaryKey
-    private int id;
+    private String id;
     private int group;
     private String word;
     private String kana;
     private String detail;
 
-    public WordEntity(int id, int group, String word, String kana, String detail){
+    public WordEntity(String id, int group, String word, String kana, String detail){
         this.id = id;
         this.group = group;
         this.word = word;
@@ -21,7 +23,7 @@ public class WordEntity {
     }
 
     // Getter
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -42,7 +44,7 @@ public class WordEntity {
     }
 
     // Setter
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
