@@ -6,11 +6,14 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.room.Room;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -40,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Toolbar toolbar = findViewById(R.id.toolbar_main);
+        toolbar.setTitle("ホーム");
         setSupportActionBar(toolbar);
 
         loadDB();
@@ -67,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
 
             Button addButton = dialog.findViewById(R.id.add_button);
             addButton.setOnClickListener(v -> {
+                if(titleText.getText().toString().equals("")) return;
                 DictionaryEntity entity = new DictionaryEntity(dictionaryList.size(),
                         titleText.getText().toString(), detailText.getText().toString());
                 dictionaryList.add(entity);
@@ -95,6 +100,10 @@ public class MainActivity extends AppCompatActivity {
                 new String[]{"list_title_text", "list_detail_text"},
                 new int[] {R.id.list_title_text, R.id.list_detail_text}
         ));
+
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            startActivity(new Intent(getApplication(), DictionaryActivity.class));
+        });
     }
 
     private void saveDB(){
@@ -109,7 +118,10 @@ public class MainActivity extends AppCompatActivity {
                 dao.insert(dictionaryList.get(i));
             }
 
-            handler.post(() -> prepareList());
+            handler.post(() -> {
+                prepareList();
+                startActivity(new Intent(getApplication(), DictionaryActivity.class));
+            });
         });
     }
     private void loadDB(){
