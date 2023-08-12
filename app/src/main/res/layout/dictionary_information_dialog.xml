@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.1"
+        android:textSize="30sp"
+        android:text="タイトル"
+        android:textColor="@color/black"
+        android:gravity="center_vertical|left"
+        android:layout_margin="10dp"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.15"
+        android:background="@drawable/border"
+        android:layout_margin="5dp">
+
+        <TextView
+            android:id="@+id/information_title_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="20sp"
+            android:layout_margin="10dp"
+            android:gravity="top|left"
+            android:inputType="textMultiLine"/>
+    </FrameLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.1"
+        android:textSize="30sp"
+        android:text="内容"
+        android:textColor="@color/black"
+        android:gravity="center_vertical|left"
+        android:layout_margin="10dp"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.45"
+        android:background="@drawable/border"
+        android:layout_margin="5dp">
+
+        <TextView
+            android:id="@+id/information_detail_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:gravity="top|left"
+            android:inputType="textMultiLine"
+            android:textSize="20sp" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.1">
+
+        <Button
+            android:id="@+id/close_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0.3"
+            android:backgroundTint="#ffffff"
+            android:text="閉じる"
+            android:textSize="20dp"
+            android:textColor="#0000ff"
+            android:layout_margin="10dp"
+            android:layout_gravity="right|center_vertical"/>
+    </FrameLayout>
+</LinearLayout>
