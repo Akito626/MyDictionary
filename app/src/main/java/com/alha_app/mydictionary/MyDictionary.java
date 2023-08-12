@@ -6,6 +6,10 @@ public class MyDictionary extends Application {
     private int id;
     private String title;
     private String detail;
+    private String word;
+    private String wordKana;
+    private String wordDetail;
+    private String indexString;
 
     // Getter
     public int getId() {
@@ -20,6 +24,22 @@ public class MyDictionary extends Application {
         return detail;
     }
 
+    public String getWord() {
+        return word;
+    }
+
+    public String getWordKana() {
+        return wordKana;
+    }
+
+    public String getWordDetail() {
+        return wordDetail;
+    }
+
+    public String getIndexString() {
+        return indexString;
+    }
+
     // Setter
     public void setId(int id) {
         this.id = id;
@@ -31,5 +51,21 @@ public class MyDictionary extends Application {
 
     public void setDetail(String detail) {
         this.detail = detail;
+    }
+
+    public void setWord(String word) {
+        this.word = word;
+    }
+
+    public void setWordKana(String wordKana) {
+        this.wordKana = wordKana;
+    }
+
+    public void setWordDetail(String wordDetail) {
+        this.wordDetail = wordDetail;
+    }
+
+    public void setIndexString(String indexString) {
+        this.indexString = indexString;
     }
 }
