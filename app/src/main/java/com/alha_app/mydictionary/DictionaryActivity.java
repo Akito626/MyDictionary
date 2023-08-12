@@ -14,6 +14,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +29,7 @@ import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -38,6 +41,7 @@ public class DictionaryActivity extends AppCompatActivity {
     private MyDictionary myDictionary;
     private List<WordEntity> wordList = new ArrayList<>();
     private List<Map<String, Object>> listData = new ArrayList<>();
+    private SimpleAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,7 +117,15 @@ public class DictionaryActivity extends AppCompatActivity {
                 }
 
                 wordList.add(entity);
+
+                Map<String, Object> listItem = new HashMap<>();
+                listItem.put("list_title_text", entity.getWord());
+                listItem.put("list_detail_text", entity.getDetail());
+                listData.add(listItem);
+                adapter.notifyDataSetChanged();
+
                 saveDB(entity);
+                dialog.dismiss();
             });
 
             dialog.show();
@@ -137,12 +149,36 @@ public class DictionaryActivity extends AppCompatActivity {
         return true;
     }
 
+    private void prepareList(){
+        listData.clear();
+        for(int i = 0; i < wordList.size(); i++){
+            Map<String, Object> item = new HashMap<>();
+            item.put("list_title_text", wordList.get(i).getWord());
+            item.put("list_detail_text", wordList.get(i).getDetail());
+            listData.add(item);
+        }
+
+        ListView listView = findViewById(R.id.word_list);
+        adapter = new SimpleAdapter(
+                this,
+                listData,
+                R.layout.dictionary_list_item,
+                new String[]{"list_title_text", "list_detail_text"},
+                new int[] {R.id.list_title_text, R.id.list_detail_text}
+        );
+        listView.setAdapter(adapter);
+    }
+
     private void saveDB(WordEntity entity){
         executor.execute(() -> {
             AppDatabase db = Room.databaseBuilder(getApplication(),
                     AppDatabase.class, "WORD_DATA").build();
             WordDao dao = db.wordDao();
             dao.insert(entity);
+
+            handler.post(() -> {
+                Toast.makeText(myDictionary, "登録しました", Toast.LENGTH_SHORT).show();
+            });
         });
     }
     private void loadDB(){
@@ -152,5 +188,7 @@ public class DictionaryActivity extends AppCompatActivity {
             WordDao dao = db.wordDao();
             wordList = dao.getAll(myDictionary.getId());
         });
+
+        handler.post(() -> prepareList());
     }
 }
