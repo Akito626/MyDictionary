@@ -36,11 +36,14 @@ public class MainActivity extends AppCompatActivity {
     private final Handler handler = new Handler();
     private List<Map<String, Object>> listData = new ArrayList<>();
     private List<DictionaryEntity> dictionaryList = new ArrayList<>();
+    private MyDictionary myDictionary;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        myDictionary = (MyDictionary) this.getApplication();
 
         Toolbar toolbar = findViewById(R.id.toolbar_main);
         toolbar.setTitle("ホーム");
@@ -74,6 +77,9 @@ public class MainActivity extends AppCompatActivity {
                 if(titleText.getText().toString().equals("")) return;
                 DictionaryEntity entity = new DictionaryEntity(dictionaryList.size(),
                         titleText.getText().toString(), detailText.getText().toString());
+                myDictionary.setId(dictionaryList.size());
+                myDictionary.setTitle(titleText.getText().toString());
+                myDictionary.setDetail(detailText.getText().toString());
                 dictionaryList.add(entity);
                 saveDB();
                 dialog.dismiss();
@@ -102,6 +108,9 @@ public class MainActivity extends AppCompatActivity {
         ));
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
+            myDictionary.setId(dictionaryList.get(position).getId());
+            myDictionary.setTitle(dictionaryList.get(position).getTitle());
+            myDictionary.setDetail(dictionaryList.get(position).getDetail());
             startActivity(new Intent(getApplication(), DictionaryActivity.class));
         });
     }
