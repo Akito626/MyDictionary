@@ -11,9 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -22,6 +20,7 @@ import android.widget.SimpleAdapter;
 import com.alha_app.mydictionary.database.AppDatabase;
 import com.alha_app.mydictionary.database.DictionaryDao;
 import com.alha_app.mydictionary.database.DictionaryEntity;
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -85,6 +84,9 @@ public class MainActivity extends AppCompatActivity {
                 dialog.dismiss();
             });
             dialog.show();
+        } else if(item.getItemId() == R.id.action_license){
+            OssLicensesMenuActivity.setActivityTitle("ライセンス");
+            startActivity(new Intent(getApplication(), OssLicensesMenuActivity.class));
         }
         return true;
     }
