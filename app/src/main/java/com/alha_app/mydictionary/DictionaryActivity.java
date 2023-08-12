@@ -5,9 +5,11 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
@@ -29,6 +31,25 @@ public class DictionaryActivity extends AppCompatActivity {
         toolbar.setTitle(myDictionary.getTitle());
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        TextView wordListText = findViewById(R.id.word_list_text);
+        TextView indexText = findViewById(R.id.index_text);
+        TextView tagText = findViewById(R.id.tag_text);
+        wordListText.setOnClickListener(v -> {
+            wordListText.setBackgroundColor(Color.parseColor("#dddddd"));
+            indexText.setBackgroundColor(Color.parseColor("#00000000"));
+            tagText.setBackgroundColor(Color.parseColor("#00000000"));
+        });
+        indexText.setOnClickListener(v -> {
+            wordListText.setBackgroundColor(Color.parseColor("#00000000"));
+            indexText.setBackgroundColor(Color.parseColor("#dddddd"));
+            tagText.setBackgroundColor(Color.parseColor("#00000000"));
+        });
+        tagText.setOnClickListener(v -> {
+            wordListText.setBackgroundColor(Color.parseColor("#00000000"));
+            indexText.setBackgroundColor(Color.parseColor("#00000000"));
+            tagText.setBackgroundColor(Color.parseColor("#dddddd"));
+        });
     }
 
     @Override

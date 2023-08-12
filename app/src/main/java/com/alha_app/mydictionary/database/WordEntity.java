@@ -13,6 +13,7 @@ public class WordEntity {
     private String word;
     private String kana;
     private String detail;
+    private String tag;
 
     public WordEntity(String id, int group, String word, String kana, String detail){
         this.id = id;
@@ -43,6 +44,10 @@ public class WordEntity {
         return detail;
     }
 
+    public String getTag() {
+        return tag;
+    }
+
     // Setter
     public void setId(String id) {
         this.id = id;
@@ -62,5 +67,9 @@ public class WordEntity {
 
     public void setDetail(String detail) {
         this.detail = detail;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
     }
 }
