@@ -8,11 +8,11 @@ import java.util.List;
 
 @Dao
 public interface WordDao {
-    @Query("SELECT * FROM WORD_DATA where `group` = :num")
-    List<WordEntity> getAll(int num);
+    @Query("SELECT * FROM WORD_DATA where `group` = :id")
+    List<WordEntity> getAll(int id);
 
-    @Query("DELETE FROM WORD_DATA")
-    void deleteAll();
+    @Query("DELETE FROM WORD_DATA where `group` = :id")
+    void deleteAll(int id);
 
     @Query("DELETE FROM WORD_DATA where id = :id")
     void delete(int id);

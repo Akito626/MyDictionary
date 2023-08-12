@@ -14,8 +14,8 @@ public interface DictionaryDao {
     @Query("DELETE FROM DICTIONARY_DATA")
     void deleteAll();
 
-    @Query("DELETE FROM DICTIONARY_DATA where id = :num")
-    void delete(int num);
+    @Query("DELETE FROM DICTIONARY_DATA where id = :id")
+    void delete(int id);
 
     @Insert
     void insert(DictionaryEntity dictionaryEntity);
