@@ -15,7 +15,7 @@ public interface WordDao {
     void deleteAll(int id);
 
     @Query("DELETE FROM WORD_DATA where id = :id")
-    void delete(int id);
+    void delete(String id);
 
     @Insert
     void insert(WordEntity wordEntity);
