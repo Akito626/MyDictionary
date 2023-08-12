@@ -73,13 +73,74 @@
         <ListView
             android:id="@+id/word_list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:visibility="invisible"/>
 
         <TableLayout
+            android:id="@+id/index_table_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="invisible">
+            android:visibility="visible">
 
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <Button
+                    android:id="@+id/button1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.2"
+                    android:text="あ"
+                    android:autoSizeTextType="uniform"
+                    android:textColor="@color/black"
+                    android:backgroundTint="#dddddd"
+                    android:layout_margin="5dp"/>
+
+                <Button
+                    android:id="@+id/button2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.2"
+                    android:text="い"
+                    android:autoSizeTextType="uniform"
+                    android:textColor="@color/black"
+                    android:backgroundTint="#dddddd"
+                    android:layout_margin="5dp"/>
+
+                <Button
+                    android:id="@+id/button3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.2"
+                    android:text="う"
+                    android:autoSizeTextType="uniform"
+                    android:textColor="@color/black"
+                    android:backgroundTint="#dddddd"
+                    android:layout_margin="5dp"/>
+
+                <Button
+                    android:id="@+id/button4"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.2"
+                    android:text="え"
+                    android:autoSizeTextType="uniform"
+                    android:textColor="@color/black"
+                    android:backgroundTint="#dddddd"
+                    android:layout_margin="5dp"/>
+
+                <Button
+                    android:id="@+id/button5"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.2"
+                    android:text="お"
+                    android:autoSizeTextType="uniform"
+                    android:textColor="@color/black"
+                    android:backgroundTint="#dddddd"
+                    android:layout_margin="5dp"/>
+            </TableRow>
         </TableLayout>
     </FrameLayout>
 </LinearLayout>
