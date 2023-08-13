@@ -11,6 +11,9 @@ public interface WordDao {
     @Query("SELECT * FROM WORD_DATA where `group` = :id")
     List<WordEntity> getAll(int id);
 
+    @Query("UPDATE WORD_DATA SET word = :word, kana = :kana, detail = :detail, tag = :tag where id = :id")
+    void update(String id, String word, String kana, String detail, String tag);
+
     @Query("DELETE FROM WORD_DATA where `group` = :id")
     void deleteAll(int id);
 
