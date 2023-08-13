@@ -68,7 +68,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="0.3"
-            android:backgroundTint="#ffffff"
+            android:backgroundTint="@color/white"
             android:text="閉じる"
             android:textSize="20dp"
             android:textColor="#0000ff"
