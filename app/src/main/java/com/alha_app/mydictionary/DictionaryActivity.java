@@ -1,6 +1,5 @@
 package com.alha_app.mydictionary;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
@@ -8,28 +7,21 @@ import androidx.room.Room;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.SimpleAdapter;
-import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,7 +30,6 @@ import com.alha_app.mydictionary.database.WordDao;
 import com.alha_app.mydictionary.database.WordEntity;
 
 import java.text.Collator;
-import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -48,8 +39,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class DictionaryActivity extends AppCompatActivity {
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -59,7 +48,7 @@ public class DictionaryActivity extends AppCompatActivity {
     private Comparator<WordEntity> japaneseComparator;
     private MyDictionary myDictionary;
     private List<WordEntity> wordList = new ArrayList<>();
-    private List<Map<String, Object>> listData = new ArrayList<>();
+    private List<Map<String, String>> listData = new ArrayList<>();
     private SimpleAdapter adapter;
     private List<String> tags = new ArrayList<>();
     private ArrayAdapter<String> tagsAdapter;
@@ -131,6 +120,7 @@ public class DictionaryActivity extends AppCompatActivity {
                     item.put("list_detail_text", entity.getDetail());
                     item.put("id", entity.getId());
                     item.put("kana", entity.getKana());
+                    item.put("tag", entity.getTag());
                     searchListData.add(item);
                 }
             }
@@ -217,10 +207,10 @@ public class DictionaryActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        if (menuItem.getItemId() == android.R.id.home) {
             finish();
-        } else if (item.getItemId() == R.id.action_add_word) {
+        } else if (menuItem.getItemId() == R.id.action_add_word) {
             Dialog dialog = new Dialog(this);
             dialog.setContentView(R.layout.add_word_dialog);
             dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
@@ -239,7 +229,7 @@ public class DictionaryActivity extends AppCompatActivity {
                             tagText.setText(tags.get(which));
                             choicePosition = which;
                         })
-                        .setNeutralButton("新規タグ", (dialog13, which) -> {
+                        .setNeutralButton("新規タグ", (dialog1, which) -> {
                             EditText editText = new EditText(this);
                             editText.setBackgroundColor(Color.parseColor("#00000000"));
                             editText.setHint("タグ名");
@@ -249,7 +239,7 @@ public class DictionaryActivity extends AppCompatActivity {
                                     .setTitle("タグ名を入力")
                                     .setView(editText)
                                     .setNegativeButton("キャンセル", null)
-                                    .setPositiveButton("OK", (dialog14, which1) -> {
+                                    .setPositiveButton("OK", (dialog2, which1) -> {
                                         if(tags.contains(editText.getText().toString())) {
                                             Toast.makeText(myDictionary, "既に存在するタグです", Toast.LENGTH_SHORT).show();
                                             return;
@@ -291,10 +281,13 @@ public class DictionaryActivity extends AppCompatActivity {
 
                 wordList.add(entity);
 
-                Map<String, Object> listItem = new HashMap<>();
-                listItem.put("list_title_text", entity.getWord());
-                listItem.put("list_detail_text", entity.getDetail());
-                listData.add(listItem);
+                Map<String, String> item = new HashMap<>();
+                item.put("list_title_text", entity.getWord());
+                item.put("list_detail_text", entity.getDetail());
+                item.put("id", entity.getId());
+                item.put("kana", entity.getKana());
+                item.put("tag", entity.getTag());
+                listData.add(item);
                 adapter.notifyDataSetChanged();
 
                 saveDB(entity);
@@ -302,7 +295,7 @@ public class DictionaryActivity extends AppCompatActivity {
             });
 
             dialog.show();
-        } else if (item.getItemId() == R.id.action_information) {
+        } else if (menuItem.getItemId() == R.id.action_information) {
             Dialog dialog = new Dialog(this);
             dialog.setContentView(R.layout.dictionary_information_dialog);
             dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
@@ -331,12 +324,13 @@ public class DictionaryActivity extends AppCompatActivity {
 
     private void prepareList() {
         listData.clear();
-        for (int i = 0; i < wordList.size(); i++) {
-            Map<String, Object> item = new HashMap<>();
-            item.put("list_title_text", wordList.get(i).getWord());
-            item.put("list_detail_text", wordList.get(i).getDetail());
-            item.put("id", wordList.get(i).getId());
-            item.put("kana", wordList.get(i).getKana());
+        for (WordEntity entity: wordList) {
+            Map<String, String> item = new HashMap<>();
+            item.put("list_title_text", entity.getWord());
+            item.put("list_detail_text", entity.getDetail());
+            item.put("id", entity.getId());
+            item.put("kana", entity.getKana());
+            item.put("tag", entity.getTag());
             listData.add(item);
         }
 
@@ -351,10 +345,11 @@ public class DictionaryActivity extends AppCompatActivity {
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
-            myDictionary.setWordId(listData.get(position).get("id").toString());
-            myDictionary.setWord(listData.get(position).get("list_title_text").toString());
-            myDictionary.setWordKana(listData.get(position).get("kana").toString());
-            myDictionary.setWordDetail(listData.get(position).get("list_detail_text").toString());
+            myDictionary.setWordId(listData.get(position).get("id"));
+            myDictionary.setWord(listData.get(position).get("list_title_text"));
+            myDictionary.setWordKana(listData.get(position).get("kana"));
+            myDictionary.setWordDetail(listData.get(position).get("list_detail_text"));
+            myDictionary.setTag(listData.get(position).get("tag"));
 
             startActivity(new Intent(getApplication(), WordActivity.class));
         });
@@ -395,11 +390,12 @@ public class DictionaryActivity extends AppCompatActivity {
         listData.clear();
         for(WordEntity entity: wordList){
             if(entity.getKana().contains(newText)){
-                Map<String, Object> item = new HashMap<>();
+                Map<String, String> item = new HashMap<>();
                 item.put("list_title_text", entity.getWord());
                 item.put("list_detail_text", entity.getDetail());
                 item.put("id", entity.getId());
                 item.put("kana", entity.getKana());
+                item.put("tag", entity.getTag());
                 listData.add(item);
             }
         }
