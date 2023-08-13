@@ -4,17 +4,22 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.room.Room;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
@@ -51,6 +56,10 @@ public class DictionaryActivity extends AppCompatActivity {
     private List<Map<String, Object>> listData = new ArrayList<>();
     private List<Map<String, String>> indexListData = new ArrayList<>();
     private SimpleAdapter adapter;
+    private List<String> tags = new ArrayList<>();
+
+    // tagの位置を保存
+    private int choicePosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -204,6 +213,8 @@ public class DictionaryActivity extends AppCompatActivity {
             return collator.compare(w1.getKana(), w2.getKana());
         };
 
+        tags.add("");
+
         loadDB();
     }
 
@@ -223,8 +234,43 @@ public class DictionaryActivity extends AppCompatActivity {
             dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
             dialog.setCancelable(false);
 
+            choicePosition = 0;
+
+            TextView tagText = dialog.findViewById(R.id.tag_text);
+
             Button tagButton = dialog.findViewById(R.id.tag_button);
             tagButton.setOnClickListener(v -> {
+                // タグを編集するダイアログ
+                new AlertDialog.Builder(this)
+                        .setTitle("タグ")
+                        .setSingleChoiceItems(tags.stream().toArray(String[]::new), choicePosition, (dialog12, which) -> {
+                            tagText.setText(tags.get(which));
+                            choicePosition = which;
+                        })
+                        .setNeutralButton("新規タグ", (dialog13, which) -> {
+                            EditText editText = new EditText(this);
+                            editText.setBackgroundColor(Color.parseColor("#00000000"));
+                            editText.setHint("タグ名");
+                            editText.setGravity(Gravity.CENTER);
+                            // 新しいタグを追加するダイアログ
+                            new AlertDialog.Builder(this)
+                                    .setTitle("タグ名を入力")
+                                    .setView(editText)
+                                    .setNegativeButton("キャンセル", null)
+                                    .setPositiveButton("OK", (dialog14, which1) -> {
+                                        if(tags.contains(editText.getText().toString())) {
+                                            Toast.makeText(myDictionary, "既に存在するタグです", Toast.LENGTH_SHORT).show();
+                                            return;
+                                        }
+                                        tags.add(editText.getText().toString());
+                                        tagText.setText(editText.getText().toString());
+                                    })
+                                    .setCancelable(false)
+                                    .show();
+                        })
+                        .setPositiveButton("OK", null)
+                        .setCancelable(false)
+                        .show();
             });
 
             Button cancelButton = dialog.findViewById(R.id.cancel_button);
@@ -243,14 +289,12 @@ public class DictionaryActivity extends AppCompatActivity {
                     return;
                 }
                 TextView detailText = dialog.findViewById(R.id.detail_text);
-                TextView tagText = dialog.findViewById(R.id.tag_text);
                 String id = String.valueOf((char) ('A' + myDictionary.getId()));
                 id += wordList.size();
                 WordEntity entity = new WordEntity(id, myDictionary.getId(), wordText.getText().toString(),
                         kanaText.getText().toString(), detailText.getText().toString());
-                if (tagText.getText().toString().equals("")) {
-                    entity.setTag(tagText.getText().toString());
-                }
+
+                entity.setTag(tagText.getText().toString());
 
                 wordList.add(entity);
 
@@ -342,8 +386,14 @@ public class DictionaryActivity extends AppCompatActivity {
                     AppDatabase.class, "WORD_DATA").build();
             WordDao dao = db.wordDao();
             wordList = dao.getAll(myDictionary.getId());
-        });
 
-        handler.post(() -> prepareList());
+            for(WordEntity entity: wordList){
+                if(!tags.contains(entity.getTag())){
+                    tags.add(entity.getTag());
+                }
+            }
+
+            handler.post(() -> prepareList());
+        });
     }
 }
