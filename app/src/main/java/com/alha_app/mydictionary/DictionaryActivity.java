@@ -2,6 +2,7 @@ package com.alha_app.mydictionary;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.room.Room;
 
@@ -72,6 +73,7 @@ public class DictionaryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_dictionary);
 
         myDictionary = (MyDictionary) this.getApplication();
+        tags.add("");
 
         Toolbar toolbar = findViewById(R.id.toolbar_dictionary);
         toolbar.setTitle(myDictionary.getTitle());
@@ -81,6 +83,7 @@ public class DictionaryActivity extends AppCompatActivity {
         TextView wordListText = findViewById(R.id.word_list_text);
         TextView indexText = findViewById(R.id.index_text);
         TextView tagText = findViewById(R.id.tag_text);
+
         ListView wordListView = findViewById(R.id.word_list);
         ScrollView indexScrollView = findViewById(R.id.index_scroll_view);
         ListView tagList = findViewById(R.id.tag_list);
@@ -184,13 +187,25 @@ public class DictionaryActivity extends AppCompatActivity {
         findViewById(R.id.button45).setOnClickListener(listener);
         findViewById(R.id.button46).setOnClickListener(listener);
 
+        SearchView searchView = findViewById(R.id.search_view);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                prepareSearchList();
+                return false;
+            }
+        });
+
         // 五十音順にソートするComparator
         japaneseComparator = (w1, w2) -> {
             Collator collator = Collator.getInstance(Locale.JAPANESE);
             return collator.compare(w1.getKana(), w2.getKana());
         };
-
-        tags.add("");
 
         loadDB();
     }
@@ -315,11 +330,12 @@ public class DictionaryActivity extends AppCompatActivity {
 
     private void prepareList() {
         listData.clear();
-        Collections.sort(wordList, japaneseComparator);
         for (int i = 0; i < wordList.size(); i++) {
             Map<String, Object> item = new HashMap<>();
             item.put("list_title_text", wordList.get(i).getWord());
             item.put("list_detail_text", wordList.get(i).getDetail());
+            item.put("id", wordList.get(i).getId());
+            item.put("kana", wordList.get(i).getKana());
             listData.add(item);
         }
 
@@ -334,10 +350,10 @@ public class DictionaryActivity extends AppCompatActivity {
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
-            myDictionary.setWordId(wordList.get(position).getId());
-            myDictionary.setWord(wordList.get(position).getWord());
-            myDictionary.setWordKana(wordList.get(position).getKana());
-            myDictionary.setWordDetail(wordList.get(position).getDetail());
+            myDictionary.setWordId(listData.get(position).get("id").toString());
+            myDictionary.setWord(listData.get(position).get("list_title_text").toString());
+            myDictionary.setWordKana(listData.get(position).get("kana").toString());
+            myDictionary.setWordDetail(listData.get(position).get("list_detail_text").toString());
 
             startActivity(new Intent(getApplication(), WordActivity.class));
         });
@@ -349,6 +365,24 @@ public class DictionaryActivity extends AppCompatActivity {
                 tags
         );
         tagsList.setAdapter(tagsAdapter);
+    }
+
+    private void prepareSearchList(){
+        SearchView searchView = findViewById(R.id.search_view);
+        String newText = searchView.getQuery().toString();
+        if(newText.equals("")) prepareList();
+        listData.clear();
+        for(WordEntity entity: wordList){
+            if(entity.getWord().contains(newText)){
+                Map<String, Object> item = new HashMap<>();
+                item.put("list_title_text", entity.getWord());
+                item.put("list_detail_text", entity.getDetail());
+                item.put("id", entity.getId());
+                item.put("kana", entity.getKana());
+                listData.add(item);
+            }
+        }
+        adapter.notifyDataSetChanged();
     }
 
     private String convVoicedSound(String str){
@@ -382,6 +416,7 @@ public class DictionaryActivity extends AppCompatActivity {
                     AppDatabase.class, "WORD_DATA").build();
             WordDao dao = db.wordDao();
             wordList = dao.getAll(myDictionary.getId());
+            Collections.sort(wordList, japaneseComparator);
 
             for(WordEntity entity: wordList){
                 if(!tags.contains(entity.getTag())){
@@ -389,7 +424,7 @@ public class DictionaryActivity extends AppCompatActivity {
                 }
             }
 
-            handler.post(() -> prepareList());
+            handler.post(() -> prepareSearchList());
         });
     }
 
