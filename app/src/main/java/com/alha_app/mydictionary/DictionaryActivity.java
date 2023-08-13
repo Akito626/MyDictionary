@@ -53,11 +53,12 @@ import java.util.regex.Pattern;
 public class DictionaryActivity extends AppCompatActivity {
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final Handler handler = new Handler();
+    private static final String dakuon = "がぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽ";
+    private static final String seion = "かきくけこさしすせそたちつてとはひふへほはひふへほ";
     private Comparator<WordEntity> japaneseComparator;
     private MyDictionary myDictionary;
     private List<WordEntity> wordList = new ArrayList<>();
     private List<Map<String, Object>> listData = new ArrayList<>();
-    private List<Map<String, String>> indexListData = new ArrayList<>();
     private SimpleAdapter adapter;
     private List<String> tags = new ArrayList<>();
     private ArrayAdapter<String> tagsAdapter;
@@ -82,8 +83,6 @@ public class DictionaryActivity extends AppCompatActivity {
         TextView tagText = findViewById(R.id.tag_text);
         ListView wordListView = findViewById(R.id.word_list);
         ScrollView indexScrollView = findViewById(R.id.index_scroll_view);
-        LinearLayout indexLayout = findViewById(R.id.index_layout);
-        ListView indexList = findViewById(R.id.index_list);
         ListView tagList = findViewById(R.id.tag_list);
 
         // tabを作成
@@ -94,7 +93,6 @@ public class DictionaryActivity extends AppCompatActivity {
 
             wordListView.setVisibility(View.VISIBLE);
             indexScrollView.setVisibility(View.INVISIBLE);
-            indexLayout.setVisibility(View.INVISIBLE);
             tagList.setVisibility(View.INVISIBLE);
         });
         indexText.setOnClickListener(v -> {
@@ -114,7 +112,6 @@ public class DictionaryActivity extends AppCompatActivity {
 
             wordListView.setVisibility(View.INVISIBLE);
             indexScrollView.setVisibility(View.INVISIBLE);
-            indexLayout.setVisibility(View.INVISIBLE);
             tagList.setVisibility(View.VISIBLE);
         });
 
@@ -122,45 +119,22 @@ public class DictionaryActivity extends AppCompatActivity {
         View.OnClickListener listener = v -> {
             Button button = (Button) v;
 
-            // 正規表現パターンを生成
-            String normalizedSearchString = Normalizer.normalize(button.getText().toString(), Normalizer.Form.NFKD); // 濁音と半濁音を分解
-            normalizedSearchString = normalizedSearchString.replaceAll("[\\p{InCombiningDiacriticalMarks}]", ""); // 合成文字を削除
-            Pattern pattern = Pattern.compile(".*" + Pattern.quote(normalizedSearchString) + ".*", Pattern.CASE_INSENSITIVE);
-
-            indexListData.clear();
+            List<Map<String, String>> searchListData = new ArrayList<>();
             for(int i = 0; i < wordList.size(); i++){
-                String normalizedData = Normalizer.normalize(wordList.get(i).getKana(), Normalizer.Form.NFKD); // 濁音と半濁音を分解
-                normalizedData = normalizedData.replaceAll("[\\p{InCombiningDiacriticalMarks}]", ""); // 合成文字を削除
-                Matcher matcher = pattern.matcher(normalizedData);
-                if(matcher.matches()) {
+                String kana = convVoicedSound(wordList.get(i).getKana());
+                if(kana.startsWith(button.getText().toString())) {
                     Map<String, String> item = new HashMap<>();
                     item.put("list_title_text", wordList.get(i).getWord());
                     item.put("list_detail_text", wordList.get(i).getDetail());
                     item.put("id", wordList.get(i).getId());
                     item.put("kana", wordList.get(i).getKana());
-                    indexListData.add(item);
+                    searchListData.add(item);
                 }
             }
+            myDictionary.setSearchString(button.getText().toString());
+            myDictionary.setSearchList(searchListData);
 
-            indexList.setAdapter(new SimpleAdapter(
-                    this,
-                    indexListData,
-                    R.layout.dictionary_list_item,
-                    new String[]{"list_title_text", "list_detail_text"},
-                    new int[]{R.id.list_title_text, R.id.list_detail_text}
-            ));
-
-            indexList.setOnItemClickListener((parent, view, position, id) -> {
-                myDictionary.setWordId(indexListData.get(position).get("id"));
-                myDictionary.setWord(indexListData.get(position).get("list_title_text"));
-                myDictionary.setWordKana(indexListData.get(position).get("kana"));
-                myDictionary.setWordDetail(indexListData.get(position).get("list_detail_text"));
-
-                startActivity(new Intent(getApplication(), WordActivity.class));
-            });
-
-            indexScrollView.setVisibility(View.INVISIBLE);
-            indexLayout.setVisibility(View.VISIBLE);
+            startActivity(new Intent(getApplication(), SearchResultsActivity.class));
         };
 
         findViewById(R.id.button1).setOnClickListener(listener);
@@ -209,11 +183,6 @@ public class DictionaryActivity extends AppCompatActivity {
         findViewById(R.id.button44).setOnClickListener(listener);
         findViewById(R.id.button45).setOnClickListener(listener);
         findViewById(R.id.button46).setOnClickListener(listener);
-
-        findViewById(R.id.index_button).setOnClickListener(v -> {
-            indexLayout.setVisibility(View.INVISIBLE);
-            indexScrollView.setVisibility(View.VISIBLE);
-        });
 
         // 五十音順にソートするComparator
         japaneseComparator = (w1, w2) -> {
@@ -380,6 +349,17 @@ public class DictionaryActivity extends AppCompatActivity {
                 tags
         );
         tagsList.setAdapter(tagsAdapter);
+    }
+
+    private String convVoicedSound(String str){
+        for(int i = 0; i < dakuon.length(); i++){
+            String s1 = dakuon.substring(i, i+1);
+            String s2 = seion.substring(i, i+1);
+
+            str = str.replaceAll(s1, s2);
+        }
+
+        return str;
     }
 
     private void saveDB(WordEntity entity) {

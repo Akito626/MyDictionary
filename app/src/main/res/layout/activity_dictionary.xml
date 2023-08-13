@@ -666,25 +666,6 @@
             </TableLayout>
         </ScrollView>
 
-        <LinearLayout
-            android:id="@+id/index_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:visibility="invisible">
-
-            <ImageButton
-                android:id="@+id/index_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_back"/>
-
-            <ListView
-                android:id="@+id/index_list"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </LinearLayout>
-
         <ListView
             android:id="@+id/tag_list"
             android:layout_width="match_parent"

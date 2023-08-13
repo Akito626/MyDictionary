@@ -2,15 +2,25 @@ package com.alha_app.mydictionary;
 
 import android.app.Application;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 public class MyDictionary extends Application {
+    // 辞書データ
     private int id;
     private String title;
     private String detail;
+
+    // 単語データ
     private String wordId;
     private String word;
     private String wordKana;
     private String wordDetail;
-    private String indexString;
+
+    // 検索データ
+    private String searchString;
+    private List<Map<String, String>> searchList = new ArrayList<>();
 
     // Getter
     public int getId() {
@@ -41,8 +51,12 @@ public class MyDictionary extends Application {
         return wordDetail;
     }
 
-    public String getIndexString() {
-        return indexString;
+    public String getSearchString() {
+        return searchString;
+    }
+
+    public List<Map<String, String>> getSearchList() {
+        return searchList;
     }
 
     // Setter
@@ -74,7 +88,11 @@ public class MyDictionary extends Application {
         this.wordDetail = wordDetail;
     }
 
-    public void setIndexString(String indexString) {
-        this.indexString = indexString;
+    public void setSearchString(String searchString) {
+        this.searchString = searchString;
+    }
+
+    public void setSearchList(List<Map<String, String>> searchList) {
+        this.searchList = searchList;
     }
 }
