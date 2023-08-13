@@ -123,14 +123,14 @@ public class DictionaryActivity extends AppCompatActivity {
             Button button = (Button) v;
 
             List<Map<String, String>> searchListData = new ArrayList<>();
-            for(int i = 0; i < wordList.size(); i++){
-                String kana = convVoicedSound(wordList.get(i).getKana());
+            for(WordEntity entity: wordList){
+                String kana = convVoicedSound(entity.getKana());
                 if(kana.startsWith(button.getText().toString())) {
                     Map<String, String> item = new HashMap<>();
-                    item.put("list_title_text", wordList.get(i).getWord());
-                    item.put("list_detail_text", wordList.get(i).getDetail());
-                    item.put("id", wordList.get(i).getId());
-                    item.put("kana", wordList.get(i).getKana());
+                    item.put("list_title_text", entity.getWord());
+                    item.put("list_detail_text", entity.getDetail());
+                    item.put("id", entity.getId());
+                    item.put("kana", entity.getKana());
                     searchListData.add(item);
                 }
             }
@@ -256,6 +256,7 @@ public class DictionaryActivity extends AppCompatActivity {
                                         }
                                         tags.add(editText.getText().toString());
                                         tagText.setText(editText.getText().toString());
+                                        tagsAdapter.notifyDataSetChanged();
                                     })
                                     .setCancelable(false)
                                     .show();
@@ -365,6 +366,26 @@ public class DictionaryActivity extends AppCompatActivity {
                 tags
         );
         tagsList.setAdapter(tagsAdapter);
+
+        tagsList.setOnItemClickListener((parent, view, position, id) -> {
+            String tag = tags.get(position);
+
+            List<Map<String, String>> searchListData = new ArrayList<>();
+            for(WordEntity entity: wordList){
+                if(entity.getTag().equals(tag)) {
+                    Map<String, String> item = new HashMap<>();
+                    item.put("list_title_text", entity.getWord());
+                    item.put("list_detail_text", entity.getDetail());
+                    item.put("id", entity.getId());
+                    item.put("kana", entity.getKana());
+                    searchListData.add(item);
+                }
+            }
+            myDictionary.setSearchString(tag);
+            myDictionary.setSearchList(searchListData);
+
+            startActivity(new Intent(getApplication(), SearchResultsActivity.class));
+        });
     }
 
     private void prepareSearchList(){
@@ -373,7 +394,7 @@ public class DictionaryActivity extends AppCompatActivity {
         if(newText.equals("")) prepareList();
         listData.clear();
         for(WordEntity entity: wordList){
-            if(entity.getWord().contains(newText)){
+            if(entity.getKana().contains(newText)){
                 Map<String, Object> item = new HashMap<>();
                 item.put("list_title_text", entity.getWord());
                 item.put("list_detail_text", entity.getDetail());

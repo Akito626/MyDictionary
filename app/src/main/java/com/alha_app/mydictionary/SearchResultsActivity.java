@@ -23,6 +23,7 @@ public class SearchResultsActivity extends AppCompatActivity {
         myDictionary = (MyDictionary) this.getApplication();
 
         Toolbar toolbar = findViewById(R.id.toolbar_search);
+        toolbar.setTitle("「" + myDictionary.getSearchString() + "」の単語");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
