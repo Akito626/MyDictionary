@@ -5,11 +5,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.room.Room;
 
+import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,6 +26,7 @@ import com.alha_app.mydictionary.database.WordEntity;
 
 import java.text.Collator;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -31,6 +36,8 @@ public class WordActivity extends AppCompatActivity {
     private final Handler handler = new Handler();
     private MyDictionary myDictionary;
     private boolean isEdit;
+    private List<String> tags;
+    private int choicePosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +52,9 @@ public class WordActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         isEdit = false;
+        tags = myDictionary.getTags();
 
+        // テキストをセット
         EditText wordText = findViewById(R.id.word_text);
         EditText kanaText = findViewById(R.id.kana_text);
         EditText detailText = findViewById(R.id.detail_text);
@@ -54,6 +63,42 @@ public class WordActivity extends AppCompatActivity {
         kanaText.setText(myDictionary.getWordKana());
         detailText.setText(myDictionary.getWordDetail());
         tagText.setText(myDictionary.getTag());
+
+        Button button = findViewById(R.id.tag_button);
+        button.setOnClickListener(v -> {
+            if(!isEdit) return;
+            // タグを編集するダイアログ
+            new AlertDialog.Builder(this)
+                    .setTitle("タグ")
+                    .setSingleChoiceItems(tags.stream().toArray(String[]::new), choicePosition, (dialog12, which) -> {
+                        tagText.setText(tags.get(which));
+                        choicePosition = which;
+                    })
+                    .setNeutralButton("新規タグ", (dialog1, which) -> {
+                        EditText editText = new EditText(this);
+                        editText.setBackgroundColor(Color.parseColor("#00000000"));
+                        editText.setHint("タグ名");
+                        editText.setGravity(Gravity.CENTER);
+                        // 新しいタグを追加するダイアログ
+                        new AlertDialog.Builder(this)
+                                .setTitle("タグ名を入力")
+                                .setView(editText)
+                                .setNegativeButton("キャンセル", null)
+                                .setPositiveButton("OK", (dialog2, which1) -> {
+                                    if(tags.contains(editText.getText().toString())) {
+                                        Toast.makeText(myDictionary, "既に存在するタグです", Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+                                    tags.add(editText.getText().toString());
+                                    tagText.setText(editText.getText().toString());
+                                })
+                                .setCancelable(false)
+                                .show();
+                    })
+                    .setPositiveButton("OK", null)
+                    .setCancelable(false)
+                    .show();
+        });
     }
 
     @Override
@@ -72,6 +117,8 @@ public class WordActivity extends AppCompatActivity {
             EditText wordText = findViewById(R.id.word_text);
             EditText kanaText = findViewById(R.id.kana_text);
             EditText detailText = findViewById(R.id.detail_text);
+            TextView tagText = findViewById(R.id.tag_text);
+            Button tagButton = findViewById(R.id.tag_button);
 
             if(isEdit) {
                 isEdit = false;
@@ -81,8 +128,23 @@ public class WordActivity extends AppCompatActivity {
                 kanaText.setEnabled(false);
                 detailText.setEnabled(false);
 
-                WordEntity entity = new WordEntity(myDictionary.getWordId(), myDictionary.getId(),
-                        wordText.getText().toString(), kanaText.getText().toString(), detailText.getText().toString());
+                wordText.setBackgroundColor(Color.parseColor("#00000000"));
+                kanaText.setBackgroundColor(Color.parseColor("#00000000"));
+                detailText.setBackgroundColor(Color.parseColor("#00000000"));
+                tagButton.setTextColor(Color.parseColor("#dddddd"));
+
+                if(wordText.getText().toString().equals(myDictionary.getWord()) && kanaText.getText().toString().equals(myDictionary.getWordKana())
+                    && detailText.getText().toString().equals(myDictionary.getWordDetail()) && tagText.getText().toString().equals(myDictionary.getTag())){
+                    return false;
+                }
+
+                myDictionary.setWord(wordText.getText().toString());
+                myDictionary.setWordKana(kanaText.getText().toString());
+                myDictionary.setDetail(detailText.getText().toString());
+                myDictionary.setTag(tagText.getText().toString());
+
+                WordEntity entity = new WordEntity(myDictionary.getWordId(), myDictionary.getId(), wordText.getText().toString(),
+                        kanaText.getText().toString(), detailText.getText().toString(), tagText.getText().toString());
                 saveDB(entity);
             } else {
                 isEdit = true;
@@ -91,6 +153,11 @@ public class WordActivity extends AppCompatActivity {
                 wordText.setEnabled(true);
                 kanaText.setEnabled(true);
                 detailText.setEnabled(true);
+
+                wordText.setBackgroundColor(Color.parseColor("#dddddd"));
+                kanaText.setBackgroundColor(Color.parseColor("#dddddd"));
+                detailText.setBackgroundColor(Color.parseColor("#dddddd"));
+                tagButton.setTextColor(Color.parseColor("#0000ff"));
             }
         }
         return true;
