@@ -145,7 +145,7 @@ public class WordActivity extends AppCompatActivity {
 
                 WordEntity entity = new WordEntity(myDictionary.getWordId(), myDictionary.getId(), wordText.getText().toString(),
                         kanaText.getText().toString(), detailText.getText().toString(), tagText.getText().toString());
-                saveDB(entity);
+                updateDB(entity);
             } else {
                 isEdit = true;
                 item.setIcon(R.drawable.ic_check);
@@ -163,13 +163,12 @@ public class WordActivity extends AppCompatActivity {
         return true;
     }
 
-    private void saveDB(WordEntity entity) {
+    private void updateDB(WordEntity entity) {
         executor.execute(() -> {
             AppDatabase db = Room.databaseBuilder(getApplication(),
                     AppDatabase.class, "WORD_DATA").build();
             WordDao dao = db.wordDao();
-            dao.delete(myDictionary.getWordId());
-            dao.insert(entity);
+            dao.update(myDictionary.getWordId(), entity.getWord(), entity.getKana(), entity.getDetail(), entity.getTag());
 
             handler.post(() -> Toast.makeText(myDictionary, "保存しました", Toast.LENGTH_SHORT).show());
         });
