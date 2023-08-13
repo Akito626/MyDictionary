@@ -132,9 +132,7 @@ public class MainActivity extends AppCompatActivity {
             DictionaryDao dao = db.dictionaryDao();
             dao.insert(entity);
 
-            handler.post(() -> {
-                startActivity(new Intent(getApplication(), DictionaryActivity.class));
-            });
+            handler.post(() -> startActivity(new Intent(getApplication(), DictionaryActivity.class)));
         });
     }
     private void loadDB(){

@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.SimpleAdapter;
@@ -27,9 +28,13 @@ import com.alha_app.mydictionary.database.AppDatabase;
 import com.alha_app.mydictionary.database.WordDao;
 import com.alha_app.mydictionary.database.WordEntity;
 
+import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -37,9 +42,11 @@ import java.util.concurrent.Executors;
 public class DictionaryActivity extends AppCompatActivity {
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final Handler handler = new Handler();
+    private Comparator<WordEntity> japaneseComparator;
     private MyDictionary myDictionary;
     private List<WordEntity> wordList = new ArrayList<>();
     private List<Map<String, Object>> listData = new ArrayList<>();
+    private List<Map<String, String>> indexListData = new ArrayList<>();
     private SimpleAdapter adapter;
 
     @Override
@@ -57,24 +64,28 @@ public class DictionaryActivity extends AppCompatActivity {
         TextView wordListText = findViewById(R.id.word_list_text);
         TextView indexText = findViewById(R.id.index_text);
         TextView tagText = findViewById(R.id.tag_text);
-        ListView wordList = findViewById(R.id.word_list);
-        ScrollView scrollView = findViewById(R.id.index_scroll_view);
+        ListView wordListView = findViewById(R.id.word_list);
+        ScrollView indexScrollView = findViewById(R.id.index_scroll_view);
+        LinearLayout indexLayout = findViewById(R.id.index_layout);
+        ListView indexList = findViewById(R.id.index_list);
 
+        // tabを作成
         wordListText.setOnClickListener(v -> {
             wordListText.setBackgroundColor(Color.parseColor("#dddddd"));
             indexText.setBackgroundColor(Color.parseColor("#00000000"));
             tagText.setBackgroundColor(Color.parseColor("#00000000"));
 
-            wordList.setVisibility(View.VISIBLE);
-            scrollView.setVisibility(View.INVISIBLE);
+            wordListView.setVisibility(View.VISIBLE);
+            indexScrollView.setVisibility(View.INVISIBLE);
+            indexLayout.setVisibility(View.INVISIBLE);
         });
         indexText.setOnClickListener(v -> {
             wordListText.setBackgroundColor(Color.parseColor("#00000000"));
             indexText.setBackgroundColor(Color.parseColor("#dddddd"));
             tagText.setBackgroundColor(Color.parseColor("#00000000"));
 
-            wordList.setVisibility(View.INVISIBLE);
-            scrollView.setVisibility(View.VISIBLE);
+            wordListView.setVisibility(View.INVISIBLE);
+            indexScrollView.setVisibility(View.VISIBLE);
         });
 
         tagText.setOnClickListener(v -> {
@@ -82,14 +93,46 @@ public class DictionaryActivity extends AppCompatActivity {
             indexText.setBackgroundColor(Color.parseColor("#00000000"));
             tagText.setBackgroundColor(Color.parseColor("#dddddd"));
 
-            wordList.setVisibility(View.INVISIBLE);
-            scrollView.setVisibility(View.INVISIBLE);
+            wordListView.setVisibility(View.INVISIBLE);
+            indexScrollView.setVisibility(View.INVISIBLE);
+            indexLayout.setVisibility(View.INVISIBLE);
         });
 
         // 索引のボタン全てにlistenerをセット
         View.OnClickListener listener = v -> {
             Button button = (Button) v;
-            myDictionary.setIndexString(button.getText().toString());
+
+            indexListData.clear();
+            for(int i = 0; i < wordList.size(); i++){
+                if(wordList.get(i).getKana().startsWith(button.getText().toString())) {
+                    Map<String, String> item = new HashMap<>();
+                    item.put("list_title_text", wordList.get(i).getWord());
+                    item.put("list_detail_text", wordList.get(i).getDetail());
+                    item.put("id", wordList.get(i).getId());
+                    item.put("kana", wordList.get(i).getKana());
+                    indexListData.add(item);
+                }
+            }
+
+            indexList.setAdapter(new SimpleAdapter(
+                    this,
+                    indexListData,
+                    R.layout.dictionary_list_item,
+                    new String[]{"list_title_text", "list_detail_text"},
+                    new int[]{R.id.list_title_text, R.id.list_detail_text}
+            ));
+
+            indexList.setOnItemClickListener((parent, view, position, id) -> {
+                myDictionary.setWordId(indexListData.get(position).get("id"));
+                myDictionary.setWord(indexListData.get(position).get("list_title_text"));
+                myDictionary.setWordKana(indexListData.get(position).get("kana"));
+                myDictionary.setWordDetail(indexListData.get(position).get("list_detail_text"));
+
+                startActivity(new Intent(getApplication(), WordActivity.class));
+            });
+
+            indexScrollView.setVisibility(View.INVISIBLE);
+            indexLayout.setVisibility(View.VISIBLE);
         };
 
         findViewById(R.id.button1).setOnClickListener(listener);
@@ -138,6 +181,17 @@ public class DictionaryActivity extends AppCompatActivity {
         findViewById(R.id.button44).setOnClickListener(listener);
         findViewById(R.id.button45).setOnClickListener(listener);
         findViewById(R.id.button46).setOnClickListener(listener);
+
+        findViewById(R.id.index_button).setOnClickListener(v -> {
+            indexLayout.setVisibility(View.INVISIBLE);
+            indexScrollView.setVisibility(View.VISIBLE);
+        });
+
+        // 五十音順にソートするComparator
+        japaneseComparator = (w1, w2) -> {
+            Collator collator = Collator.getInstance(Locale.JAPANESE);
+            return collator.compare(w1.getKana(), w2.getKana());
+        };
 
         loadDB();
     }
@@ -229,6 +283,7 @@ public class DictionaryActivity extends AppCompatActivity {
 
     private void prepareList() {
         listData.clear();
+        Collections.sort(wordList, japaneseComparator);
         for (int i = 0; i < wordList.size(); i++) {
             Map<String, Object> item = new HashMap<>();
             item.put("list_title_text", wordList.get(i).getWord());
@@ -264,6 +319,7 @@ public class DictionaryActivity extends AppCompatActivity {
             dao.insert(entity);
 
             handler.post(() -> {
+                Collections.sort(wordList, japaneseComparator);
                 Toast.makeText(myDictionary, "登録しました", Toast.LENGTH_SHORT).show();
             });
         });
