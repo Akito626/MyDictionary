@@ -1,5 +1,6 @@
 package com.alha_app.mydictionary;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.room.Room;
@@ -11,6 +12,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -57,6 +60,7 @@ public class DictionaryActivity extends AppCompatActivity {
     private List<Map<String, String>> indexListData = new ArrayList<>();
     private SimpleAdapter adapter;
     private List<String> tags = new ArrayList<>();
+    private ArrayAdapter<String> tagsAdapter;
 
     // tagの位置を保存
     private int choicePosition;
@@ -80,6 +84,7 @@ public class DictionaryActivity extends AppCompatActivity {
         ScrollView indexScrollView = findViewById(R.id.index_scroll_view);
         LinearLayout indexLayout = findViewById(R.id.index_layout);
         ListView indexList = findViewById(R.id.index_list);
+        ListView tagList = findViewById(R.id.tag_list);
 
         // tabを作成
         wordListText.setOnClickListener(v -> {
@@ -90,6 +95,7 @@ public class DictionaryActivity extends AppCompatActivity {
             wordListView.setVisibility(View.VISIBLE);
             indexScrollView.setVisibility(View.INVISIBLE);
             indexLayout.setVisibility(View.INVISIBLE);
+            tagList.setVisibility(View.INVISIBLE);
         });
         indexText.setOnClickListener(v -> {
             wordListText.setBackgroundColor(Color.parseColor("#00000000"));
@@ -98,6 +104,7 @@ public class DictionaryActivity extends AppCompatActivity {
 
             wordListView.setVisibility(View.INVISIBLE);
             indexScrollView.setVisibility(View.VISIBLE);
+            tagList.setVisibility(View.INVISIBLE);
         });
 
         tagText.setOnClickListener(v -> {
@@ -108,6 +115,7 @@ public class DictionaryActivity extends AppCompatActivity {
             wordListView.setVisibility(View.INVISIBLE);
             indexScrollView.setVisibility(View.INVISIBLE);
             indexLayout.setVisibility(View.INVISIBLE);
+            tagList.setVisibility(View.VISIBLE);
         });
 
         // 索引のボタン全てにlistenerをセット
@@ -294,7 +302,7 @@ public class DictionaryActivity extends AppCompatActivity {
                 WordEntity entity = new WordEntity(id, myDictionary.getId(), wordText.getText().toString(),
                         kanaText.getText().toString(), detailText.getText().toString());
 
-                entity.setTag(tagText.getText().toString());
+                entity.setTag(tagText.getText().toString().trim());
 
                 wordList.add(entity);
 
@@ -364,6 +372,14 @@ public class DictionaryActivity extends AppCompatActivity {
 
             startActivity(new Intent(getApplication(), WordActivity.class));
         });
+
+        ListView tagsList = findViewById(R.id.tag_list);
+        tagsAdapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_list_item_1,
+                tags
+        );
+        tagsList.setAdapter(tagsAdapter);
     }
 
     private void saveDB(WordEntity entity) {
@@ -394,6 +410,15 @@ public class DictionaryActivity extends AppCompatActivity {
             }
 
             handler.post(() -> prepareList());
+        });
+    }
+
+    private void deleteDB(String id){
+        executor.execute(() -> {
+            AppDatabase db = Room.databaseBuilder(getApplication(),
+                    AppDatabase.class, "WORD_DATA").build();
+            WordDao dao = db.wordDao();
+            dao.delete(id);
         });
     }
 }
