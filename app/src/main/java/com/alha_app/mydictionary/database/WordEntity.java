@@ -15,12 +15,13 @@ public class WordEntity {
     private String detail;
     private String tag;
 
-    public WordEntity(String id, int group, String word, String kana, String detail){
+    public WordEntity(String id, int group, String word, String kana, String detail, String tag){
         this.id = id;
         this.group = group;
         this.word = word;
         this.kana = kana;
         this.detail = detail;
+        this.tag = tag;
     }
 
     // Getter

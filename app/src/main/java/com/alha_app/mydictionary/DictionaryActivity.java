@@ -43,6 +43,7 @@ import java.util.concurrent.Executors;
 public class DictionaryActivity extends AppCompatActivity {
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final Handler handler = new Handler();
+    private final Collator collator = Collator.getInstance(Locale.JAPANESE);
     private static final String dakuon = "がぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽ";
     private static final String seion = "かきくけこさしすせそたちつてとはひふへほはひふへほ";
     private Comparator<WordEntity> japaneseComparator;
@@ -192,10 +193,7 @@ public class DictionaryActivity extends AppCompatActivity {
         });
 
         // 五十音順にソートするComparator
-        japaneseComparator = (w1, w2) -> {
-            Collator collator = Collator.getInstance(Locale.JAPANESE);
-            return collator.compare(w1.getKana(), w2.getKana());
-        };
+        japaneseComparator = (w1, w2) -> collator.compare(w1.getKana(), w2.getKana());
 
         loadDB();
     }
@@ -245,8 +243,11 @@ public class DictionaryActivity extends AppCompatActivity {
                                             return;
                                         }
                                         tags.add(editText.getText().toString());
+                                        Collections.sort(tags, collator);
                                         tagText.setText(editText.getText().toString());
                                         tagsAdapter.notifyDataSetChanged();
+
+                                        myDictionary.setTags(tags);
                                     })
                                     .setCancelable(false)
                                     .show();
@@ -275,9 +276,7 @@ public class DictionaryActivity extends AppCompatActivity {
                 String id = String.valueOf((char) ('A' + myDictionary.getId()));
                 id += wordList.size();
                 WordEntity entity = new WordEntity(id, myDictionary.getId(), wordText.getText().toString(),
-                        kanaText.getText().toString(), detailText.getText().toString());
-
-                entity.setTag(tagText.getText().toString().trim());
+                        kanaText.getText().toString(), detailText.getText().toString(), tagText.getText().toString().trim());
 
                 wordList.add(entity);
 
@@ -354,6 +353,7 @@ public class DictionaryActivity extends AppCompatActivity {
             startActivity(new Intent(getApplication(), WordActivity.class));
         });
 
+        // タグリストを準備
         ListView tagsList = findViewById(R.id.tag_list);
         tagsAdapter = new ArrayAdapter<>(
                 this,
@@ -440,6 +440,9 @@ public class DictionaryActivity extends AppCompatActivity {
                     tags.add(entity.getTag());
                 }
             }
+
+            Collections.sort(tags, collator);
+            myDictionary.setTags(tags);
 
             handler.post(() -> prepareSearchList());
         });

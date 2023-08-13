@@ -18,10 +18,11 @@ public class MyDictionary extends Application {
     private String wordKana;
     private String wordDetail;
     private String tag;
+    private List<String> tags;
 
     // 検索データ
     private String searchString;
-    private List<Map<String, String>> searchList = new ArrayList<>();
+    private List<Map<String, String>> searchList;
 
     // Getter
     public int getId() {
@@ -54,6 +55,10 @@ public class MyDictionary extends Application {
 
     public String getTag() {
         return tag;
+    }
+
+    public List<String> getTags() {
+        return tags;
     }
 
     public String getSearchString() {
@@ -95,6 +100,10 @@ public class MyDictionary extends Application {
 
     public void setTag(String tag) {
         this.tag = tag;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
     }
 
     public void setSearchString(String searchString) {
