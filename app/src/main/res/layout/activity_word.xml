@@ -17,46 +17,93 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
+        android:background="#00000000"
+        android:enabled="false"
         android:gravity="center_vertical|left"
         android:textColor="@color/black"
-        android:textSize="30sp"
-        android:enabled="false"
-        android:background="#00000000"/>
+        android:textSize="30sp" />
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginStart="15dp">
+        android:layout_height="0dp"
+        android:layout_weight="0.9"
+        android:fillViewport="true">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:textSize="25sp"
-            android:text="読み方："
-            android:textColor="@color/black"
-            android:gravity="center_vertical|left"/>
-
-        <EditText
-            android:id="@+id/kana_text"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:textSize="25sp"
-            android:textColor="@color/black"
-            android:gravity="center_vertical|left"
-            android:enabled="false"
-            android:background="#00000000"/>
-    </LinearLayout>
+            android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/detail_text"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="15dp"
-        android:textSize="25sp"
-        android:textColor="@color/black"
-        android:gravity="top|left"
-        android:enabled="false"
-        android:background="#00000000"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:orientation="horizontal">
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical|left"
+                    android:text="読み方："
+                    android:textColor="@color/black"
+                    android:textSize="25sp" />
+
+                <EditText
+                    android:id="@+id/kana_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#00000000"
+                    android:enabled="false"
+                    android:gravity="center_vertical|left"
+                    android:textColor="@color/black"
+                    android:textSize="25sp" />
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/detail_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:background="#00000000"
+                android:enabled="false"
+                android:gravity="top|left"
+                android:textColor="@color/black"
+                android:textSize="25sp" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical|left"
+                    android:gravity="center"
+                    android:text="タグ"
+                    android:textColor="#afafb0"
+                    android:textSize="20sp" />
+
+                <Button
+                    android:id="@+id/tag_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical|right"
+                    android:backgroundTint="@color/white"
+                    android:text="編集"
+                    android:textColor="#0000ff"
+                    android:textSize="20sp" />
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/tag_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:gravity="top|left"
+                android:inputType="textMultiLine"
+                android:textSize="20sp" />
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

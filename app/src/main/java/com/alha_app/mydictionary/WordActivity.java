@@ -49,9 +49,11 @@ public class WordActivity extends AppCompatActivity {
         EditText wordText = findViewById(R.id.word_text);
         EditText kanaText = findViewById(R.id.kana_text);
         EditText detailText = findViewById(R.id.detail_text);
+        TextView tagText = findViewById(R.id.tag_text);
         wordText.setText(myDictionary.getWord());
         kanaText.setText(myDictionary.getWordKana());
         detailText.setText(myDictionary.getWordDetail());
+        tagText.setText(myDictionary.getTag());
     }
 
     @Override

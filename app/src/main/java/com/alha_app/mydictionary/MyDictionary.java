@@ -17,6 +17,7 @@ public class MyDictionary extends Application {
     private String word;
     private String wordKana;
     private String wordDetail;
+    private String tag;
 
     // 検索データ
     private String searchString;
@@ -49,6 +50,10 @@ public class MyDictionary extends Application {
 
     public String getWordDetail() {
         return wordDetail;
+    }
+
+    public String getTag() {
+        return tag;
     }
 
     public String getSearchString() {
@@ -86,6 +91,10 @@ public class MyDictionary extends Application {
 
     public void setWordDetail(String wordDetail) {
         this.wordDetail = wordDetail;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
     }
 
     public void setSearchString(String searchString) {

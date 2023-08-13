@@ -3,6 +3,7 @@ package com.alha_app.mydictionary;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
@@ -49,5 +50,15 @@ public class SearchResultsActivity extends AppCompatActivity {
                 new String[]{"list_title_text", "list_detail_text"},
                 new int[]{R.id.list_title_text, R.id.list_detail_text}
         ));
+
+        searchList.setOnItemClickListener((parent, view, position, id) -> {
+            myDictionary.setWordId(listData.get(position).get("id"));
+            myDictionary.setWord(listData.get(position).get("list_title_text"));
+            myDictionary.setWordKana(listData.get(position).get("kana"));
+            myDictionary.setWordDetail(listData.get(position).get("list_detail_text"));
+            myDictionary.setTag(listData.get(position).get("tag"));
+
+            startActivity(new Intent(getApplication(), WordActivity.class));
+        });
     }
 }
