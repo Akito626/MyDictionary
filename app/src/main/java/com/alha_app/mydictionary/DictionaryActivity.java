@@ -29,6 +29,7 @@ import com.alha_app.mydictionary.database.WordDao;
 import com.alha_app.mydictionary.database.WordEntity;
 
 import java.text.Collator;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -38,6 +39,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class DictionaryActivity extends AppCompatActivity {
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -102,9 +105,17 @@ public class DictionaryActivity extends AppCompatActivity {
         View.OnClickListener listener = v -> {
             Button button = (Button) v;
 
+            // 正規表現パターンを生成
+            String normalizedSearchString = Normalizer.normalize(button.getText().toString(), Normalizer.Form.NFKD); // 濁音と半濁音を分解
+            normalizedSearchString = normalizedSearchString.replaceAll("[\\p{InCombiningDiacriticalMarks}]", ""); // 合成文字を削除
+            Pattern pattern = Pattern.compile(".*" + Pattern.quote(normalizedSearchString) + ".*", Pattern.CASE_INSENSITIVE);
+
             indexListData.clear();
             for(int i = 0; i < wordList.size(); i++){
-                if(wordList.get(i).getKana().startsWith(button.getText().toString())) {
+                String normalizedData = Normalizer.normalize(wordList.get(i).getKana(), Normalizer.Form.NFKD); // 濁音と半濁音を分解
+                normalizedData = normalizedData.replaceAll("[\\p{InCombiningDiacriticalMarks}]", ""); // 合成文字を削除
+                Matcher matcher = pattern.matcher(normalizedData);
+                if(matcher.matches()) {
                     Map<String, String> item = new HashMap<>();
                     item.put("list_title_text", wordList.get(i).getWord());
                     item.put("list_detail_text", wordList.get(i).getDetail());
