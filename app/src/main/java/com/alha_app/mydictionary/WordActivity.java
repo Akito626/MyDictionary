@@ -159,6 +159,14 @@ public class WordActivity extends AppCompatActivity {
                 detailText.setBackgroundColor(Color.parseColor("#dddddd"));
                 tagButton.setTextColor(Color.parseColor("#0000ff"));
             }
+        } else if(item.getItemId() == R.id.action_home){
+            Intent intent = new Intent(getApplication(), MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        } else if(item.getItemId() == R.id.action_dictionary_home) {
+            Intent intent = new Intent(getApplication(), DictionaryActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
         }
         return true;
     }
