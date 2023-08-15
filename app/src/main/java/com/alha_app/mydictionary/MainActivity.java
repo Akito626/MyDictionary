@@ -9,9 +9,12 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -20,6 +23,7 @@ import android.widget.SimpleAdapter;
 import com.alha_app.mydictionary.database.AppDatabase;
 import com.alha_app.mydictionary.database.DictionaryDao;
 import com.alha_app.mydictionary.database.DictionaryEntity;
+import com.alha_app.mydictionary.database.WordDao;
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
 
 import java.util.ArrayList;
@@ -98,6 +102,23 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo info) {
+        super.onCreateContextMenu(menu, view, info);
+        getMenuInflater().inflate(R.menu.menu_context, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+
+        if(item.getItemId() == R.id.context_delete){
+            //dictionaryList.remove(info.position);
+        }
+
+        return true;
+    }
+
     private void prepareList(){
         listData.clear();
         for(int i = 0; i < dictionaryList.size(); i++){
@@ -123,6 +144,8 @@ public class MainActivity extends AppCompatActivity {
             myDictionary.setDetail(dictionaryList.get(position).getDetail());
             startActivity(new Intent(getApplication(), DictionaryActivity.class));
         });
+
+        registerForContextMenu(listView);
     }
 
     private void saveDB(DictionaryEntity entity){
@@ -143,6 +166,20 @@ public class MainActivity extends AppCompatActivity {
             dictionaryList = dao.getAll();
 
             handler.post(() -> prepareList());
+        });
+    }
+
+    private void deleteDB(int id){
+        executor.execute(() -> {
+            AppDatabase dictionaryDB = Room.databaseBuilder(getApplication(),
+                    AppDatabase.class, "DICTIONARY_DATA").build();
+            AppDatabase wordDB = Room.databaseBuilder(getApplication(),
+                    AppDatabase.class, "WORD_DATA").build();
+            DictionaryDao dictionaryDao = dictionaryDB.dictionaryDao();
+            WordDao wordDao = wordDB.wordDao();
+
+            wordDao.deleteAll(id);
+            dictionaryDao.delete(id);
         });
     }
 }
