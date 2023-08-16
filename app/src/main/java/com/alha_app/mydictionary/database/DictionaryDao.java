@@ -18,5 +18,5 @@ public interface DictionaryDao {
     void delete(int id);
 
     @Insert
-    void insert(DictionaryEntity dictionaryEntity);
+    long insert(DictionaryEntity dictionaryEntity);
 }
