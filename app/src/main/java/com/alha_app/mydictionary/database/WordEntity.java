@@ -6,17 +6,15 @@ import androidx.room.PrimaryKey;
 
 @Entity(tableName = "WORD_DATA")
 public class WordEntity {
-    @NonNull
-    @PrimaryKey
-    private String id;
+    @PrimaryKey(autoGenerate = true)
+    private int id;
     private int group;
     private String word;
     private String kana;
     private String detail;
     private String tag;
 
-    public WordEntity(String id, int group, String word, String kana, String detail, String tag){
-        this.id = id;
+    public WordEntity(int group, String word, String kana, String detail, String tag){
         this.group = group;
         this.word = word;
         this.kana = kana;
@@ -25,7 +23,7 @@ public class WordEntity {
     }
 
     // Getter
-    public String getId() {
+    public int getId() {
         return id;
     }
 
@@ -50,7 +48,7 @@ public class WordEntity {
     }
 
     // Setter
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 

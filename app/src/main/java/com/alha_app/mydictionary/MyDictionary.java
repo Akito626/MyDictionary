@@ -13,7 +13,7 @@ public class MyDictionary extends Application {
     private String detail;
 
     // 単語データ
-    private String wordId;
+    private int wordId;
     private String word;
     private String wordKana;
     private String wordDetail;
@@ -22,7 +22,7 @@ public class MyDictionary extends Application {
 
     // 検索データ
     private String searchString;
-    private List<Map<String, String>> searchList;
+    private List<Map<String, Object>> searchList;
 
     // Getter
     public int getId() {
@@ -37,7 +37,7 @@ public class MyDictionary extends Application {
         return detail;
     }
 
-    public String getWordId() {
+    public int getWordId() {
         return wordId;
     }
 
@@ -65,7 +65,7 @@ public class MyDictionary extends Application {
         return searchString;
     }
 
-    public List<Map<String, String>> getSearchList() {
+    public List<Map<String, Object>> getSearchList() {
         return searchList;
     }
 
@@ -82,7 +82,7 @@ public class MyDictionary extends Application {
         this.detail = detail;
     }
 
-    public void setWordId(String wordId) {
+    public void setWordId(int wordId) {
         this.wordId = wordId;
     }
 
@@ -110,7 +110,7 @@ public class MyDictionary extends Application {
         this.searchString = searchString;
     }
 
-    public void setSearchList(List<Map<String, String>> searchList) {
+    public void setSearchList(List<Map<String, Object>> searchList) {
         this.searchList = searchList;
     }
 }

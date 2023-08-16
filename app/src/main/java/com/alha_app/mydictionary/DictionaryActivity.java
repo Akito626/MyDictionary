@@ -49,7 +49,7 @@ public class DictionaryActivity extends AppCompatActivity {
     private Comparator<WordEntity> japaneseComparator;
     private MyDictionary myDictionary;
     private List<WordEntity> wordList = new ArrayList<>();
-    private List<Map<String, String>> listData = new ArrayList<>();
+    private List<Map<String, Object>> listData = new ArrayList<>();
     private SimpleAdapter adapter;
     private List<String> tags = new ArrayList<>();
     private ArrayAdapter<String> tagsAdapter;
@@ -112,11 +112,11 @@ public class DictionaryActivity extends AppCompatActivity {
         View.OnClickListener listener = v -> {
             Button button = (Button) v;
 
-            List<Map<String, String>> searchListData = new ArrayList<>();
+            List<Map<String, Object>> searchListData = new ArrayList<>();
             for(WordEntity entity: wordList){
                 String kana = convVoicedSound(entity.getKana());
                 if(kana.startsWith(button.getText().toString())) {
-                    Map<String, String> item = new HashMap<>();
+                    Map<String, Object> item = new HashMap<>();
                     item.put("list_title_text", entity.getWord());
                     item.put("list_detail_text", entity.getDetail());
                     item.put("id", entity.getId());
@@ -273,21 +273,8 @@ public class DictionaryActivity extends AppCompatActivity {
                     return;
                 }
                 TextView detailText = dialog.findViewById(R.id.detail_text);
-                String id = String.valueOf((char) ('A' + myDictionary.getId()));
-                id += wordList.size();
-                WordEntity entity = new WordEntity(id, myDictionary.getId(), wordText.getText().toString(),
+                WordEntity entity = new WordEntity(myDictionary.getId(), wordText.getText().toString(),
                         kanaText.getText().toString(), detailText.getText().toString(), tagText.getText().toString().trim());
-
-                wordList.add(entity);
-
-                Map<String, String> item = new HashMap<>();
-                item.put("list_title_text", entity.getWord());
-                item.put("list_detail_text", entity.getDetail());
-                item.put("id", entity.getId());
-                item.put("kana", entity.getKana());
-                item.put("tag", entity.getTag());
-                listData.add(item);
-                adapter.notifyDataSetChanged();
 
                 saveDB(entity);
                 dialog.dismiss();
@@ -324,7 +311,7 @@ public class DictionaryActivity extends AppCompatActivity {
     private void prepareList() {
         listData.clear();
         for (WordEntity entity: wordList) {
-            Map<String, String> item = new HashMap<>();
+            Map<String, Object> item = new HashMap<>();
             item.put("list_title_text", entity.getWord());
             item.put("list_detail_text", entity.getDetail());
             item.put("id", entity.getId());
@@ -344,11 +331,11 @@ public class DictionaryActivity extends AppCompatActivity {
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
-            myDictionary.setWordId(listData.get(position).get("id"));
-            myDictionary.setWord(listData.get(position).get("list_title_text"));
-            myDictionary.setWordKana(listData.get(position).get("kana"));
-            myDictionary.setWordDetail(listData.get(position).get("list_detail_text"));
-            myDictionary.setTag(listData.get(position).get("tag"));
+            myDictionary.setWordId(Integer.parseInt(listData.get(position).get("id").toString()));
+            myDictionary.setWord(listData.get(position).get("list_title_text").toString());
+            myDictionary.setWordKana(listData.get(position).get("kana").toString());
+            myDictionary.setWordDetail(listData.get(position).get("list_detail_text").toString());
+            myDictionary.setTag(listData.get(position).get("tag").toString());
 
             startActivity(new Intent(getApplication(), WordActivity.class));
         });
@@ -365,10 +352,10 @@ public class DictionaryActivity extends AppCompatActivity {
         tagsList.setOnItemClickListener((parent, view, position, id) -> {
             String tag = tags.get(position);
 
-            List<Map<String, String>> searchListData = new ArrayList<>();
+            List<Map<String, Object>> searchListData = new ArrayList<>();
             for(WordEntity entity: wordList){
                 if(entity.getTag().equals(tag)) {
-                    Map<String, String> item = new HashMap<>();
+                    Map<String, Object> item = new HashMap<>();
                     item.put("list_title_text", entity.getWord());
                     item.put("list_detail_text", entity.getDetail());
                     item.put("id", entity.getId());
@@ -390,7 +377,7 @@ public class DictionaryActivity extends AppCompatActivity {
         listData.clear();
         for(WordEntity entity: wordList){
             if(entity.getKana().contains(newText)){
-                Map<String, String> item = new HashMap<>();
+                Map<String, Object> item = new HashMap<>();
                 item.put("list_title_text", entity.getWord());
                 item.put("list_detail_text", entity.getDetail());
                 item.put("id", entity.getId());
@@ -418,10 +405,22 @@ public class DictionaryActivity extends AppCompatActivity {
             AppDatabase db = Room.databaseBuilder(getApplication(),
                     AppDatabase.class, "WORD_DATA").build();
             WordDao dao = db.wordDao();
-            dao.insert(entity);
+            int id = (int)dao.insert(entity);
+
+            entity.setId(id);
+            wordList.add(entity);
+
+            Map<String, Object> item = new HashMap<>();
+            item.put("list_title_text", entity.getWord());
+            item.put("list_detail_text", entity.getDetail());
+            item.put("id", id);
+            item.put("kana", entity.getKana());
+            item.put("tag", entity.getTag());
+            listData.add(item);
 
             handler.post(() -> {
                 Collections.sort(wordList, japaneseComparator);
+                adapter.notifyDataSetChanged();
                 Toast.makeText(myDictionary, "登録しました", Toast.LENGTH_SHORT).show();
             });
         });

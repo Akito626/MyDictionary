@@ -41,7 +41,7 @@ public class SearchResultsActivity extends AppCompatActivity {
     }
 
     private void prepareList(){
-        List<Map<String, String>> listData = myDictionary.getSearchList();
+        List<Map<String, Object>> listData = myDictionary.getSearchList();
         ListView searchList = findViewById(R.id.search_list);
         searchList.setAdapter(new SimpleAdapter(
                 this,
@@ -52,11 +52,11 @@ public class SearchResultsActivity extends AppCompatActivity {
         ));
 
         searchList.setOnItemClickListener((parent, view, position, id) -> {
-            myDictionary.setWordId(listData.get(position).get("id"));
-            myDictionary.setWord(listData.get(position).get("list_title_text"));
-            myDictionary.setWordKana(listData.get(position).get("kana"));
-            myDictionary.setWordDetail(listData.get(position).get("list_detail_text"));
-            myDictionary.setTag(listData.get(position).get("tag"));
+            myDictionary.setWordId(Integer.parseInt(listData.get(position).get("id").toString()));
+            myDictionary.setWord(listData.get(position).get("list_title_text").toString());
+            myDictionary.setWordKana(listData.get(position).get("kana").toString());
+            myDictionary.setWordDetail(listData.get(position).get("list_detail_text").toString());
+            myDictionary.setTag(listData.get(position).get("tag").toString());
 
             startActivity(new Intent(getApplication(), WordActivity.class));
         });
