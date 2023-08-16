@@ -1,5 +1,6 @@
 package com.alha_app.mydictionary;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
@@ -11,11 +12,13 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -302,6 +305,23 @@ public class DictionaryActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo info) {
+        super.onCreateContextMenu(menu, view, info);
+        getMenuInflater().inflate(R.menu.menu_context, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+
+        if(item.getItemId() == R.id.context_delete){
+            deleteWord(wordList.get(info.position).getId());
+        }
+
+        return true;
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
 
@@ -329,6 +349,8 @@ public class DictionaryActivity extends AppCompatActivity {
                 new int[]{R.id.list_title_text, R.id.list_detail_text}
         );
         listView.setAdapter(adapter);
+
+        registerForContextMenu(listView);
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
             myDictionary.setWordId(Integer.parseInt(listData.get(position).get("id").toString()));
@@ -360,6 +382,7 @@ public class DictionaryActivity extends AppCompatActivity {
                     item.put("list_detail_text", entity.getDetail());
                     item.put("id", entity.getId());
                     item.put("kana", entity.getKana());
+                    item.put("tag", entity.getTag());
                     searchListData.add(item);
                 }
             }
@@ -373,7 +396,10 @@ public class DictionaryActivity extends AppCompatActivity {
     private void prepareSearchList(){
         SearchView searchView = findViewById(R.id.search_view);
         String newText = searchView.getQuery().toString();
-        if(newText.equals("")) prepareList();
+        if(newText.equals("")) {
+            prepareList();
+            return;
+        }
         listData.clear();
         for(WordEntity entity: wordList){
             if(entity.getKana().contains(newText)){
@@ -447,12 +473,14 @@ public class DictionaryActivity extends AppCompatActivity {
         });
     }
 
-    private void deleteDB(String id){
+    private void deleteWord(int id){
         executor.execute(() -> {
             AppDatabase db = Room.databaseBuilder(getApplication(),
                     AppDatabase.class, "WORD_DATA").build();
             WordDao dao = db.wordDao();
             dao.delete(id);
+
+            loadDB();
         });
     }
 }

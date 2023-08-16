@@ -27,6 +27,7 @@ import com.alha_app.mydictionary.database.WordDao;
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -102,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
 
         if(item.getItemId() == R.id.context_delete){
-            //dictionaryList.remove(info.position);
+            deleteDictionary(dictionaryList.get(info.position).getId());
         }
 
         return true;
@@ -168,11 +169,16 @@ public class MainActivity extends AppCompatActivity {
             DictionaryDao dao = db.dictionaryDao();
             dictionaryList = dao.getAll();
 
+            dictionaryList.sort(Comparator.comparing(DictionaryEntity::getId));
+            for(DictionaryEntity entity: dictionaryList){
+                System.out.println(entity.getId() + " " + entity.getTitle());
+            }
+
             handler.post(() -> prepareList());
         });
     }
 
-    private void deleteDB(int id){
+    private void deleteDictionary(int id){
         executor.execute(() -> {
             AppDatabase dictionaryDB = Room.databaseBuilder(getApplication(),
                     AppDatabase.class, "DICTIONARY_DATA").build();
@@ -183,6 +189,8 @@ public class MainActivity extends AppCompatActivity {
 
             wordDao.deleteAll(id);
             dictionaryDao.delete(id);
+
+            loadDB();
         });
     }
 }
