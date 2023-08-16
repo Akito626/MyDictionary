@@ -78,18 +78,7 @@ public class MainActivity extends AppCompatActivity {
             Button addButton = dialog.findViewById(R.id.add_button);
             addButton.setOnClickListener(v -> {
                 if(titleText.getText().toString().equals("")) return;
-                DictionaryEntity entity = new DictionaryEntity(dictionaryList.size(),
-                        titleText.getText().toString(), detailText.getText().toString());
-                myDictionary.setId(dictionaryList.size());
-                myDictionary.setTitle(titleText.getText().toString());
-                myDictionary.setDetail(detailText.getText().toString());
-                dictionaryList.add(entity);
-
-                Map<String, Object> listItem = new HashMap<>();
-                listItem.put("list_title_text", entity.getTitle());
-                listItem.put("list_detail_text", entity.getDetail());
-                listData.add(listItem);
-                adapter.notifyDataSetChanged();
+                DictionaryEntity entity = new DictionaryEntity(titleText.getText().toString(), detailText.getText().toString());
 
                 saveDB(entity);
                 dialog.dismiss();
@@ -153,9 +142,23 @@ public class MainActivity extends AppCompatActivity {
             AppDatabase db = Room.databaseBuilder(getApplication(),
                     AppDatabase.class, "DICTIONARY_DATA").build();
             DictionaryDao dao = db.dictionaryDao();
-            dao.insert(entity);
+            int id = (int)dao.insert(entity);
 
-            handler.post(() -> startActivity(new Intent(getApplication(), DictionaryActivity.class)));
+            entity.setId(id);
+            myDictionary.setId(id);
+            myDictionary.setTitle(entity.getTitle());
+            myDictionary.setDetail(entity.getDetail());
+            dictionaryList.add(entity);
+
+            Map<String, Object> listItem = new HashMap<>();
+            listItem.put("list_title_text", entity.getTitle());
+            listItem.put("list_detail_text", entity.getDetail());
+            listData.add(listItem);
+
+            handler.post(() -> {
+                adapter.notifyDataSetChanged();
+                startActivity(new Intent(getApplication(), DictionaryActivity.class));
+            });
         });
     }
     private void loadDB(){

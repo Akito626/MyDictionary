@@ -5,13 +5,12 @@ import androidx.room.PrimaryKey;
 
 @Entity(tableName = "DICTIONARY_DATA")
 public class DictionaryEntity {
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     private int id;
     private String title;
     private String detail;
 
-    public DictionaryEntity(int id, String title, String detail){
-        this.id = id;
+    public DictionaryEntity(String title, String detail){
         this.title = title;
         this.detail = detail;
     }
