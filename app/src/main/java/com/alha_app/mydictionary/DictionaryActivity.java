@@ -181,6 +181,7 @@ public class DictionaryActivity extends AppCompatActivity {
         findViewById(R.id.button45).setOnClickListener(listener);
         findViewById(R.id.button46).setOnClickListener(listener);
 
+        // 検索バーの設定
         SearchView searchView = findViewById(R.id.search_view);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -196,7 +197,7 @@ public class DictionaryActivity extends AppCompatActivity {
         });
 
         // 五十音順にソートするComparator
-        japaneseComparator = (w1, w2) -> collator.compare(w1.getKana(), w2.getKana());
+        japaneseComparator = (w1, w2) -> collator.compare(w1.getWord(), w2.getWord());
 
         loadDB();
     }
@@ -211,7 +212,7 @@ public class DictionaryActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         if (menuItem.getItemId() == android.R.id.home) {
             finish();
-        } else if (menuItem.getItemId() == R.id.action_add_word) {
+        } else if (menuItem.getItemId() == R.id.action_add_word) {      // 追加ボタンの処理
             Dialog dialog = new Dialog(this);
             dialog.setContentView(R.layout.add_word_dialog);
             dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
@@ -271,10 +272,6 @@ public class DictionaryActivity extends AppCompatActivity {
                     return;
                 }
                 TextView kanaText = dialog.findViewById(R.id.kana_text);
-                if (wordText.getText().toString().equals("")) {
-                    Toast.makeText(myDictionary, "読みを入力してください", Toast.LENGTH_SHORT).show();
-                    return;
-                }
                 TextView detailText = dialog.findViewById(R.id.detail_text);
                 WordEntity entity = new WordEntity(myDictionary.getId(), wordText.getText().toString(),
                         kanaText.getText().toString(), detailText.getText().toString(), tagText.getText().toString().trim());
@@ -394,6 +391,7 @@ public class DictionaryActivity extends AppCompatActivity {
     }
 
     private void prepareSearchList(){
+        // 検索バーが空だったら通常のリストを準備
         SearchView searchView = findViewById(R.id.search_view);
         String newText = searchView.getQuery().toString();
         if(newText.equals("")) {
@@ -402,7 +400,7 @@ public class DictionaryActivity extends AppCompatActivity {
         }
         listData.clear();
         for(WordEntity entity: wordList){
-            if(entity.getKana().contains(newText)){
+            if(entity.getWord().contains(newText) || entity.getKana().contains(newText)){
                 Map<String, Object> item = new HashMap<>();
                 item.put("list_title_text", entity.getWord());
                 item.put("list_detail_text", entity.getDetail());
@@ -415,6 +413,7 @@ public class DictionaryActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
     }
 
+    // 濁音を清音に変換
     private String convVoicedSound(String str){
         for(int i = 0; i < dakuon.length(); i++){
             String s1 = dakuon.substring(i, i+1);
@@ -436,17 +435,10 @@ public class DictionaryActivity extends AppCompatActivity {
             entity.setId(id);
             wordList.add(entity);
 
-            Map<String, Object> item = new HashMap<>();
-            item.put("list_title_text", entity.getWord());
-            item.put("list_detail_text", entity.getDetail());
-            item.put("id", id);
-            item.put("kana", entity.getKana());
-            item.put("tag", entity.getTag());
-            listData.add(item);
+            Collections.sort(wordList, japaneseComparator);
 
             handler.post(() -> {
-                Collections.sort(wordList, japaneseComparator);
-                adapter.notifyDataSetChanged();
+                prepareSearchList();
                 Toast.makeText(myDictionary, "登録しました", Toast.LENGTH_SHORT).show();
             });
         });
