@@ -12,7 +12,7 @@ public interface WordDao {
     List<WordEntity> getAll(int id);
 
     @Query("UPDATE WORD_DATA SET word = :word, kana = :kana, detail = :detail, tag = :tag where id = :id")
-    void update(String id, String word, String kana, String detail, String tag);
+    void update(int id, String word, String kana, String detail, String tag);
 
     @Query("DELETE FROM WORD_DATA where `group` = :id")
     void deleteAll(int id);
@@ -21,5 +21,5 @@ public interface WordDao {
     void delete(String id);
 
     @Insert
-    void insert(WordEntity wordEntity);
+    long insert(WordEntity wordEntity);
 }
