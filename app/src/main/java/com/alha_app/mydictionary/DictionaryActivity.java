@@ -22,6 +22,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.SimpleAdapter;
@@ -29,6 +30,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alha_app.mydictionary.database.AppDatabase;
+import com.alha_app.mydictionary.database.DictionaryDao;
+import com.alha_app.mydictionary.database.DictionaryEntity;
 import com.alha_app.mydictionary.database.WordDao;
 import com.alha_app.mydictionary.database.WordEntity;
 
@@ -59,6 +62,9 @@ public class DictionaryActivity extends AppCompatActivity {
 
     // tagの位置を保存
     private int choicePosition;
+
+    // 辞書情報を編集中かどうか
+    private boolean isEdit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -203,6 +209,13 @@ public class DictionaryActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+
+        loadDB();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_dictionary, menu);
         return true;
@@ -282,19 +295,51 @@ public class DictionaryActivity extends AppCompatActivity {
 
             dialog.show();
         } else if (menuItem.getItemId() == R.id.action_information) {
+            isEdit = false;
             Dialog dialog = new Dialog(this);
             dialog.setContentView(R.layout.dictionary_information_dialog);
             dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
             dialog.setCancelable(false);
 
-            TextView titleText = dialog.findViewById(R.id.information_title_text);
+            EditText titleText = dialog.findViewById(R.id.information_title_text);
             titleText.setText(myDictionary.getTitle());
 
-            TextView detailText = dialog.findViewById(R.id.information_detail_text);
+            EditText detailText = dialog.findViewById(R.id.information_detail_text);
             detailText.setText(myDictionary.getDetail());
 
             Button button = dialog.findViewById(R.id.close_button);
-            button.setOnClickListener(v -> dialog.dismiss());
+            button.setOnClickListener(v -> {
+                if(!isEdit) dialog.dismiss();
+            });
+
+            ImageButton editButton = dialog.findViewById(R.id.edit_button);
+            editButton.setOnClickListener(v -> {
+                if(isEdit) {
+                    isEdit = false;
+                    titleText.setBackgroundColor(Color.parseColor("#00000000"));
+                    detailText.setBackgroundColor(Color.parseColor("#00000000"));
+                    titleText.setEnabled(false);
+                    detailText.setEnabled(false);
+
+                    if(titleText.getText().toString().equals(myDictionary.getTitle()) && detailText.getText().toString().equals(myDictionary.getDetail())){
+                        return;
+                    }
+
+                    getSupportActionBar().setTitle(titleText.getText().toString());
+
+                    myDictionary.setTitle(titleText.getText().toString());
+                    myDictionary.setDetail(detailText.getText().toString());
+
+                    DictionaryEntity entity = new DictionaryEntity(titleText.getText().toString(), detailText.getText().toString());
+                    updateDB(entity);
+                } else {
+                    isEdit = true;
+                    titleText.setBackgroundColor(Color.parseColor("#dddddd"));
+                    detailText.setBackgroundColor(Color.parseColor("#dddddd"));
+                    titleText.setEnabled(true);
+                    detailText.setEnabled(true);
+                }
+            });
 
             dialog.show();
         }
@@ -316,13 +361,6 @@ public class DictionaryActivity extends AppCompatActivity {
         }
 
         return true;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        loadDB();
     }
 
     private void prepareList() {
@@ -473,6 +511,17 @@ public class DictionaryActivity extends AppCompatActivity {
             dao.delete(id);
 
             loadDB();
+        });
+    }
+
+    private void updateDB(DictionaryEntity entity){
+        executor.execute(() -> {
+            AppDatabase db = Room.databaseBuilder(getApplication(),
+                    AppDatabase.class, "DICTIONARY_DATA").build();
+            DictionaryDao dao = db.dictionaryDao();
+            dao.update(myDictionary.getId(), entity.getTitle(), entity.getDetail());
+
+            handler.post(() -> Toast.makeText(myDictionary, "保存しました", Toast.LENGTH_SHORT).show());
         });
     }
 }
