@@ -57,6 +57,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+
+        loadDB();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(@NonNull Menu menu){
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;

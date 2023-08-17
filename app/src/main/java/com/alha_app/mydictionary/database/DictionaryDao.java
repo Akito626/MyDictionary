@@ -11,6 +11,9 @@ public interface DictionaryDao {
     @Query("SELECT * FROM DICTIONARY_DATA")
     List<DictionaryEntity> getAll();
 
+    @Query("UPDATE DICTIONARY_DATA SET title = :title, detail = :detail where id = :id")
+    void update(int id, String title, String detail);
+
     @Query("DELETE FROM DICTIONARY_DATA")
     void deleteAll();
 
