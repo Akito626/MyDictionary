@@ -56,6 +56,8 @@ public class DictionaryActivity extends AppCompatActivity {
     private MyDictionary myDictionary;
     private List<WordEntity> wordList = new ArrayList<>();
     private List<Map<String, Object>> listData = new ArrayList<>();
+
+    // 単語リストのアダプター
     private SimpleAdapter adapter;
     private List<String> tags = new ArrayList<>();
     private ArrayAdapter<String> tagsAdapter;
