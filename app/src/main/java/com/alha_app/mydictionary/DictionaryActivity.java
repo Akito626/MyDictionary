@@ -4,7 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 import androidx.room.Room;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -34,6 +36,9 @@ import com.alha_app.mydictionary.database.DictionaryDao;
 import com.alha_app.mydictionary.database.DictionaryEntity;
 import com.alha_app.mydictionary.database.WordDao;
 import com.alha_app.mydictionary.database.WordEntity;
+import com.alha_app.mydictionary.model.TabPagerAdapter;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.text.Collator;
 import java.util.ArrayList;
@@ -53,14 +58,11 @@ public class DictionaryActivity extends AppCompatActivity {
     private static final String dakuon = "がぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽ";
     private static final String seion = "かきくけこさしすせそたちつてとはひふへほはひふへほ";
     private Comparator<WordEntity> japaneseComparator;
+    private List<Fragment> fragmentList;
     private MyDictionary myDictionary;
-    private List<WordEntity> wordList = new ArrayList<>();
-    private List<Map<String, Object>> listData = new ArrayList<>();
-
-    // 単語リストのアダプター
-    private SimpleAdapter adapter;
+    private ViewPager2 pager;
+    private TabPagerAdapter tabAdapter;
     private List<String> tags = new ArrayList<>();
-    private ArrayAdapter<String> tagsAdapter;
 
     // tagの位置を保存
     private int choicePosition;
@@ -81,142 +83,34 @@ public class DictionaryActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        TextView wordListText = findViewById(R.id.word_list_text);
-        TextView indexText = findViewById(R.id.index_text);
-        TextView tagText = findViewById(R.id.tag_text);
+        pager = findViewById(R.id.pager);
+        tabAdapter = new TabPagerAdapter(this);
+        pager.setAdapter(tabAdapter);
 
-        ListView wordListView = findViewById(R.id.word_list);
-        ScrollView indexScrollView = findViewById(R.id.index_scroll_view);
-        ListView tagList = findViewById(R.id.tag_list);
-
-        // tabを作成
-        wordListText.setOnClickListener(v -> {
-            wordListText.setBackgroundColor(Color.parseColor("#dddddd"));
-            indexText.setBackgroundColor(Color.parseColor("#00000000"));
-            tagText.setBackgroundColor(Color.parseColor("#00000000"));
-
-            wordListView.setVisibility(View.VISIBLE);
-            indexScrollView.setVisibility(View.INVISIBLE);
-            tagList.setVisibility(View.INVISIBLE);
-        });
-        indexText.setOnClickListener(v -> {
-            wordListText.setBackgroundColor(Color.parseColor("#00000000"));
-            indexText.setBackgroundColor(Color.parseColor("#dddddd"));
-            tagText.setBackgroundColor(Color.parseColor("#00000000"));
-
-            wordListView.setVisibility(View.INVISIBLE);
-            indexScrollView.setVisibility(View.VISIBLE);
-            tagList.setVisibility(View.INVISIBLE);
-        });
-
-        tagText.setOnClickListener(v -> {
-            wordListText.setBackgroundColor(Color.parseColor("#00000000"));
-            indexText.setBackgroundColor(Color.parseColor("#00000000"));
-            tagText.setBackgroundColor(Color.parseColor("#dddddd"));
-
-            wordListView.setVisibility(View.INVISIBLE);
-            indexScrollView.setVisibility(View.INVISIBLE);
-            tagList.setVisibility(View.VISIBLE);
-        });
-
-        // 索引のボタン全てにlistenerをセット
-        View.OnClickListener listener = v -> {
-            Button button = (Button) v;
-
-            List<Map<String, Object>> searchListData = new ArrayList<>();
-            for(WordEntity entity: wordList){
-                String kana = convVoicedSound(entity.getKana());
-                if(kana.startsWith(button.getText().toString())) {
-                    Map<String, Object> item = new HashMap<>();
-                    item.put("list_title_text", entity.getWord());
-                    item.put("list_detail_text", entity.getDetail());
-                    item.put("id", entity.getId());
-                    item.put("kana", entity.getKana());
-                    item.put("tag", entity.getTag());
-                    searchListData.add(item);
-                }
+        TabLayout tabLayout = findViewById(R.id.tab_layout);
+        new TabLayoutMediator(tabLayout, pager, ((tab, position) -> {
+            if(position == 0){
+                tab.setText("単語一覧");
+            } else if(position == 1){
+                tab.setText("日本語索引");
+            } else if(position == 2){
+                tab.setText("英語索引");
+            } else if(position == 3){
+                tab.setText("タグ");
             }
-            myDictionary.setSearchString(button.getText().toString());
-            myDictionary.setSearchList(searchListData);
-
-            startActivity(new Intent(getApplication(), SearchResultsActivity.class));
-        };
-
-        findViewById(R.id.button1).setOnClickListener(listener);
-        findViewById(R.id.button2).setOnClickListener(listener);
-        findViewById(R.id.button3).setOnClickListener(listener);
-        findViewById(R.id.button4).setOnClickListener(listener);
-        findViewById(R.id.button5).setOnClickListener(listener);
-        findViewById(R.id.button6).setOnClickListener(listener);
-        findViewById(R.id.button7).setOnClickListener(listener);
-        findViewById(R.id.button8).setOnClickListener(listener);
-        findViewById(R.id.button9).setOnClickListener(listener);
-        findViewById(R.id.button10).setOnClickListener(listener);
-        findViewById(R.id.button11).setOnClickListener(listener);
-        findViewById(R.id.button12).setOnClickListener(listener);
-        findViewById(R.id.button13).setOnClickListener(listener);
-        findViewById(R.id.button14).setOnClickListener(listener);
-        findViewById(R.id.button15).setOnClickListener(listener);
-        findViewById(R.id.button16).setOnClickListener(listener);
-        findViewById(R.id.button17).setOnClickListener(listener);
-        findViewById(R.id.button18).setOnClickListener(listener);
-        findViewById(R.id.button19).setOnClickListener(listener);
-        findViewById(R.id.button20).setOnClickListener(listener);
-        findViewById(R.id.button21).setOnClickListener(listener);
-        findViewById(R.id.button22).setOnClickListener(listener);
-        findViewById(R.id.button23).setOnClickListener(listener);
-        findViewById(R.id.button24).setOnClickListener(listener);
-        findViewById(R.id.button25).setOnClickListener(listener);
-        findViewById(R.id.button26).setOnClickListener(listener);
-        findViewById(R.id.button27).setOnClickListener(listener);
-        findViewById(R.id.button28).setOnClickListener(listener);
-        findViewById(R.id.button29).setOnClickListener(listener);
-        findViewById(R.id.button30).setOnClickListener(listener);
-        findViewById(R.id.button31).setOnClickListener(listener);
-        findViewById(R.id.button32).setOnClickListener(listener);
-        findViewById(R.id.button33).setOnClickListener(listener);
-        findViewById(R.id.button34).setOnClickListener(listener);
-        findViewById(R.id.button35).setOnClickListener(listener);
-        findViewById(R.id.button36).setOnClickListener(listener);
-        findViewById(R.id.button37).setOnClickListener(listener);
-        findViewById(R.id.button38).setOnClickListener(listener);
-        findViewById(R.id.button39).setOnClickListener(listener);
-        findViewById(R.id.button40).setOnClickListener(listener);
-        findViewById(R.id.button41).setOnClickListener(listener);
-        findViewById(R.id.button42).setOnClickListener(listener);
-        findViewById(R.id.button43).setOnClickListener(listener);
-        findViewById(R.id.button44).setOnClickListener(listener);
-        findViewById(R.id.button45).setOnClickListener(listener);
-        findViewById(R.id.button46).setOnClickListener(listener);
-
-        // 検索バーの設定
-        SearchView searchView = findViewById(R.id.search_view);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                prepareSearchList();
-                return false;
-            }
-        });
+        })).attach();
 
         // 五十音順にソートするComparator
         japaneseComparator = (w1, w2) -> collator.compare(w1.getWord(), w2.getWord());
 
         loadDB();
     }
-
     @Override
     public void onResume() {
         super.onResume();
 
         loadDB();
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_dictionary, menu);
@@ -264,7 +158,6 @@ public class DictionaryActivity extends AppCompatActivity {
                                         tags.add(editText.getText().toString());
                                         Collections.sort(tags, collator);
                                         tagText.setText(editText.getText().toString());
-                                        tagsAdapter.notifyDataSetChanged();
 
                                         myDictionary.setTags(tags);
                                     })
@@ -333,7 +226,7 @@ public class DictionaryActivity extends AppCompatActivity {
                     myDictionary.setDetail(detailText.getText().toString());
 
                     DictionaryEntity entity = new DictionaryEntity(titleText.getText().toString(), detailText.getText().toString());
-                    updateDB(entity);
+                    updateDictionary(entity);
                 } else {
                     isEdit = true;
                     titleText.setBackgroundColor(Color.parseColor("#dddddd"));
@@ -347,150 +240,36 @@ public class DictionaryActivity extends AppCompatActivity {
         }
         return true;
     }
-
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo info) {
-        super.onCreateContextMenu(menu, view, info);
-        getMenuInflater().inflate(R.menu.menu_context, menu);
+    public void setFragmentList(List<Fragment> fragmentList){
+        this.fragmentList = fragmentList;
     }
 
-    @Override
-    public boolean onContextItemSelected(@NonNull MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
-
-        if(item.getItemId() == R.id.context_delete){
-            deleteWord(wordList.get(info.position).getId());
-        }
-
-        return true;
-    }
-
-    private void prepareList() {
-        listData.clear();
-        for (WordEntity entity: wordList) {
-            Map<String, Object> item = new HashMap<>();
-            item.put("list_title_text", entity.getWord());
-            item.put("list_detail_text", entity.getDetail());
-            item.put("id", entity.getId());
-            item.put("kana", entity.getKana());
-            item.put("tag", entity.getTag());
-            listData.add(item);
-        }
-
-        ListView listView = findViewById(R.id.word_list);
-        adapter = new SimpleAdapter(
-                this,
-                listData,
-                R.layout.dictionary_list_item,
-                new String[]{"list_title_text", "list_detail_text"},
-                new int[]{R.id.list_title_text, R.id.list_detail_text}
-        );
-        listView.setAdapter(adapter);
-
-        registerForContextMenu(listView);
-
-        listView.setOnItemClickListener((parent, view, position, id) -> {
-            myDictionary.setWordId(Integer.parseInt(listData.get(position).get("id").toString()));
-            myDictionary.setWord(listData.get(position).get("list_title_text").toString());
-            myDictionary.setWordKana(listData.get(position).get("kana").toString());
-            myDictionary.setWordDetail(listData.get(position).get("list_detail_text").toString());
-            myDictionary.setTag(listData.get(position).get("tag").toString());
-
-            startActivity(new Intent(getApplication(), WordActivity.class));
-        });
-
-        // タグリストを準備
-        ListView tagsList = findViewById(R.id.tag_list);
-        tagsAdapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_list_item_1,
-                tags
-        );
-        tagsList.setAdapter(tagsAdapter);
-
-        tagsList.setOnItemClickListener((parent, view, position, id) -> {
-            String tag = tags.get(position);
-
-            List<Map<String, Object>> searchListData = new ArrayList<>();
-            for(WordEntity entity: wordList){
-                if(entity.getTag().equals(tag)) {
-                    Map<String, Object> item = new HashMap<>();
-                    item.put("list_title_text", entity.getWord());
-                    item.put("list_detail_text", entity.getDetail());
-                    item.put("id", entity.getId());
-                    item.put("kana", entity.getKana());
-                    item.put("tag", entity.getTag());
-                    searchListData.add(item);
-                }
-            }
-            myDictionary.setSearchString(tag);
-            myDictionary.setSearchList(searchListData);
-
-            startActivity(new Intent(getApplication(), SearchResultsActivity.class));
-        });
-    }
-
-    private void prepareSearchList(){
-        // 検索バーが空だったら通常のリストを準備
-        SearchView searchView = findViewById(R.id.search_view);
-        String newText = searchView.getQuery().toString();
-        if(newText.equals("")) {
-            prepareList();
-            return;
-        }
-        listData.clear();
-        for(WordEntity entity: wordList){
-            if(entity.getWord().contains(newText) || entity.getKana().contains(newText)){
-                Map<String, Object> item = new HashMap<>();
-                item.put("list_title_text", entity.getWord());
-                item.put("list_detail_text", entity.getDetail());
-                item.put("id", entity.getId());
-                item.put("kana", entity.getKana());
-                item.put("tag", entity.getTag());
-                listData.add(item);
-            }
-        }
-        adapter.notifyDataSetChanged();
-    }
-
-    // 濁音を清音に変換
-    private String convVoicedSound(String str){
-        for(int i = 0; i < dakuon.length(); i++){
-            String s1 = dakuon.substring(i, i+1);
-            String s2 = seion.substring(i, i+1);
-
-            str = str.replaceAll(s1, s2);
-        }
-
-        return str;
-    }
-
-    private void saveDB(WordEntity entity) {
+    public void saveDB(WordEntity entity) {
         executor.execute(() -> {
             AppDatabase db = Room.databaseBuilder(getApplication(),
                     AppDatabase.class, "WORD_DATA").build();
             WordDao dao = db.wordDao();
             int id = (int)dao.insert(entity);
-
             entity.setId(id);
-            wordList.add(entity);
+            myDictionary.addWord(entity);
 
-            Collections.sort(wordList, japaneseComparator);
+            if(pager.getCurrentItem() == 0){
+                Fragment fragment = fragmentList.get(0);
+                WordListFragment wordFragment = (WordListFragment) fragment;
+                wordFragment.addWord(entity);
+            }
 
-            handler.post(() -> {
-                prepareSearchList();
-                Toast.makeText(myDictionary, "登録しました", Toast.LENGTH_SHORT).show();
-            });
+            handler.post(() -> Toast.makeText(myDictionary, "登録しました", Toast.LENGTH_SHORT).show());
         });
     }
-
-    private void loadDB() {
+    public void loadDB() {
         executor.execute(() -> {
             AppDatabase db = Room.databaseBuilder(getApplication(),
                     AppDatabase.class, "WORD_DATA").build();
             WordDao dao = db.wordDao();
-            wordList = dao.getAll(myDictionary.getId());
+            List<WordEntity> wordList = dao.getAll(myDictionary.getId());
             Collections.sort(wordList, japaneseComparator);
+            myDictionary.setWordList(wordList);
 
             for(WordEntity entity: wordList){
                 if(!tags.contains(entity.getTag())){
@@ -500,23 +279,19 @@ public class DictionaryActivity extends AppCompatActivity {
 
             Collections.sort(tags, collator);
             myDictionary.setTags(tags);
-
-            handler.post(() -> prepareSearchList());
         });
     }
 
-    private void deleteWord(int id){
+    public void deleteWord(int id){
         executor.execute(() -> {
             AppDatabase db = Room.databaseBuilder(getApplication(),
                     AppDatabase.class, "WORD_DATA").build();
             WordDao dao = db.wordDao();
             dao.delete(id);
-
-            loadDB();
         });
     }
 
-    private void updateDB(DictionaryEntity entity){
+    private void updateDictionary(DictionaryEntity entity){
         executor.execute(() -> {
             AppDatabase db = Room.databaseBuilder(getApplication(),
                     AppDatabase.class, "DICTIONARY_DATA").build();

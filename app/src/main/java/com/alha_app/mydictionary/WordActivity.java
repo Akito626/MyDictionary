@@ -108,7 +108,7 @@ public class WordActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item){
+    public boolean onOptionsItemSelected(@NonNull MenuItem item){
         if(item.getItemId() == android.R.id.home){
             if(!isEdit) {
                 finish();
