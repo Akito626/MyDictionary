@@ -2,6 +2,8 @@ package com.alha_app.mydictionary;
 
 import android.app.Application;
 
+import com.alha_app.mydictionary.database.WordEntity;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +20,7 @@ public class MyDictionary extends Application {
     private String wordKana;
     private String wordDetail;
     private String tag;
+    private List<WordEntity> wordList = new ArrayList<>();
     private List<String> tags;
 
     // 検索データ
@@ -55,6 +58,10 @@ public class MyDictionary extends Application {
 
     public String getTag() {
         return tag;
+    }
+
+    public List<WordEntity> getWordList() {
+        return wordList;
     }
 
     public List<String> getTags() {
@@ -102,6 +109,10 @@ public class MyDictionary extends Application {
         this.tag = tag;
     }
 
+    public void setWordList(List<WordEntity> wordList) {
+        this.wordList = wordList;
+    }
+
     public void setTags(List<String> tags) {
         this.tags = tags;
     }
@@ -112,5 +123,13 @@ public class MyDictionary extends Application {
 
     public void setSearchList(List<Map<String, Object>> searchList) {
         this.searchList = searchList;
+    }
+
+    public void addWord(WordEntity entity){
+        wordList.add(entity);
+    }
+
+    public void removeWord(int position){
+        wordList.remove(position);
     }
 }
