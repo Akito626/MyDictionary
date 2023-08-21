@@ -9,10 +9,12 @@ public class DictionaryEntity {
     private int id;
     private String title;
     private String detail;
+    private long updateTime;
 
-    public DictionaryEntity(String title, String detail){
+    public DictionaryEntity(String title, String detail, long updateTime){
         this.title = title;
         this.detail = detail;
+        this.updateTime = updateTime;
     }
 
     public int getId() {
@@ -27,6 +29,10 @@ public class DictionaryEntity {
         return detail;
     }
 
+    public long getUpdateTime() {
+        return updateTime;
+    }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -37,5 +43,9 @@ public class DictionaryEntity {
 
     public void setDetail(String detail) {
         this.detail = detail;
+    }
+
+    public void setUpdateTime(long updateTime) {
+        this.updateTime = updateTime;
     }
 }

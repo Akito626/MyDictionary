@@ -223,7 +223,7 @@ public class DictionaryActivity extends AppCompatActivity {
                     myDictionary.setTitle(titleText.getText().toString());
                     myDictionary.setDetail(detailText.getText().toString());
 
-                    DictionaryEntity entity = new DictionaryEntity(titleText.getText().toString(), detailText.getText().toString());
+                    DictionaryEntity entity = new DictionaryEntity(titleText.getText().toString(), detailText.getText().toString(), System.currentTimeMillis());
                     updateDictionary(entity);
                 } else {
                     isEdit = true;
@@ -251,11 +251,25 @@ public class DictionaryActivity extends AppCompatActivity {
             entity.setId(id);
             myDictionary.addWord(entity);
 
-            if(pager.getCurrentItem() == 0){
-                Fragment fragment = fragmentList.get(0);
-                WordListFragment wordFragment = (WordListFragment) fragment;
-                wordFragment.addWord(entity);
+            Fragment fragment;
+            switch (pager.getCurrentItem()){
+                case 0:
+                    fragment = fragmentList.get(0);
+                    WordListFragment wordFragment = (WordListFragment) fragment;
+                    wordFragment.addWord(entity);
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    fragment = fragmentList.get(3);
+                    TagListFragment tagListFragment = (TagListFragment) fragment;
+                    tagListFragment.callPrepareList();
+                    break;
             }
+
+            updateDictionaryTime();
 
             handler.post(() -> Toast.makeText(myDictionary, "登録しました", Toast.LENGTH_SHORT).show());
         });
@@ -286,6 +300,8 @@ public class DictionaryActivity extends AppCompatActivity {
                     AppDatabase.class, "WORD_DATA").build();
             WordDao dao = db.wordDao();
             dao.delete(id);
+
+            updateDictionaryTime();
         });
     }
 
@@ -294,9 +310,18 @@ public class DictionaryActivity extends AppCompatActivity {
             AppDatabase db = Room.databaseBuilder(getApplication(),
                     AppDatabase.class, "DICTIONARY_DATA").build();
             DictionaryDao dao = db.dictionaryDao();
-            dao.update(myDictionary.getId(), entity.getTitle(), entity.getDetail());
+            dao.update(myDictionary.getId(), entity.getTitle(), entity.getDetail(), entity.getUpdateTime());
 
             handler.post(() -> Toast.makeText(myDictionary, "保存しました", Toast.LENGTH_SHORT).show());
+        });
+    }
+
+    private void updateDictionaryTime(){
+        executor.execute(() -> {
+            AppDatabase db = Room.databaseBuilder(getApplication(),
+                    AppDatabase.class, "DICTIONARY_DATA").build();
+            DictionaryDao dao = db.dictionaryDao();
+            dao.update(myDictionary.getId(), myDictionary.getTitle(), myDictionary.getDetail(), System.currentTimeMillis());
         });
     }
 }

@@ -11,8 +11,11 @@ public interface DictionaryDao {
     @Query("SELECT * FROM DICTIONARY_DATA")
     List<DictionaryEntity> getAll();
 
-    @Query("UPDATE DICTIONARY_DATA SET title = :title, detail = :detail where id = :id")
-    void update(int id, String title, String detail);
+    @Query("UPDATE DICTIONARY_DATA SET title = :title, detail = :detail, updateTime = :updateTime where id = :id")
+    void update(int id, String title, String detail, long updateTime);
+
+    @Query("UPDATE DICTIONARY_DATA SET updateTime = :updateTime where id = :id")
+    void updateTime(int id, long updateTime);
 
     @Query("DELETE FROM DICTIONARY_DATA")
     void deleteAll();
