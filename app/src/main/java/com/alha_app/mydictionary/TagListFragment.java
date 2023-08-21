@@ -88,6 +88,7 @@ public class TagListFragment extends Fragment {
     public void onResume(){
         super.onResume();
 
+        wordList = myDictionary.getWordList();
         tags = myDictionary.getTags();
         prepareList();
     }

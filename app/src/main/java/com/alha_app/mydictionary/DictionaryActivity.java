@@ -102,8 +102,6 @@ public class DictionaryActivity extends AppCompatActivity {
 
         // 五十音順にソートするComparator
         japaneseComparator = (w1, w2) -> collator.compare(w1.getWord(), w2.getWord());
-
-        loadDB();
     }
     @Override
     public void onResume() {

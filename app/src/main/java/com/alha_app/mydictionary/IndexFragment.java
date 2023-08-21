@@ -42,7 +42,17 @@ public class IndexFragment extends Fragment {
         myDictionary = (MyDictionary) activity.getApplication();
 
         wordList = myDictionary.getWordList();
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        wordList = myDictionary.getWordList();
+        prepareButton();
+    }
+
+    private void prepareButton(){
         // 索引のボタン全てにlistenerをセット
         View.OnClickListener listener = v -> {
             Button button = (Button) v;
@@ -66,52 +76,52 @@ public class IndexFragment extends Fragment {
             startActivity(new Intent(myDictionary, SearchResultsActivity.class));
         };
 
-        view.findViewById(R.id.button1).setOnClickListener(listener);
-        view.findViewById(R.id.button2).setOnClickListener(listener);
-        view.findViewById(R.id.button3).setOnClickListener(listener);
-        view.findViewById(R.id.button4).setOnClickListener(listener);
-        view.findViewById(R.id.button5).setOnClickListener(listener);
-        view.findViewById(R.id.button6).setOnClickListener(listener);
-        view.findViewById(R.id.button7).setOnClickListener(listener);
-        view.findViewById(R.id.button8).setOnClickListener(listener);
-        view.findViewById(R.id.button9).setOnClickListener(listener);
-        view.findViewById(R.id.button10).setOnClickListener(listener);
-        view.findViewById(R.id.button11).setOnClickListener(listener);
-        view.findViewById(R.id.button12).setOnClickListener(listener);
-        view.findViewById(R.id.button13).setOnClickListener(listener);
-        view.findViewById(R.id.button14).setOnClickListener(listener);
-        view.findViewById(R.id.button15).setOnClickListener(listener);
-        view.findViewById(R.id.button16).setOnClickListener(listener);
-        view.findViewById(R.id.button17).setOnClickListener(listener);
-        view.findViewById(R.id.button18).setOnClickListener(listener);
-        view.findViewById(R.id.button19).setOnClickListener(listener);
-        view.findViewById(R.id.button20).setOnClickListener(listener);
-        view.findViewById(R.id.button21).setOnClickListener(listener);
-        view.findViewById(R.id.button22).setOnClickListener(listener);
-        view.findViewById(R.id.button23).setOnClickListener(listener);
-        view.findViewById(R.id.button24).setOnClickListener(listener);
-        view.findViewById(R.id.button25).setOnClickListener(listener);
-        view.findViewById(R.id.button26).setOnClickListener(listener);
-        view.findViewById(R.id.button27).setOnClickListener(listener);
-        view.findViewById(R.id.button28).setOnClickListener(listener);
-        view.findViewById(R.id.button29).setOnClickListener(listener);
-        view.findViewById(R.id.button30).setOnClickListener(listener);
-        view.findViewById(R.id.button31).setOnClickListener(listener);
-        view.findViewById(R.id.button32).setOnClickListener(listener);
-        view.findViewById(R.id.button33).setOnClickListener(listener);
-        view.findViewById(R.id.button34).setOnClickListener(listener);
-        view.findViewById(R.id.button35).setOnClickListener(listener);
-        view.findViewById(R.id.button36).setOnClickListener(listener);
-        view.findViewById(R.id.button37).setOnClickListener(listener);
-        view.findViewById(R.id.button38).setOnClickListener(listener);
-        view.findViewById(R.id.button39).setOnClickListener(listener);
-        view.findViewById(R.id.button40).setOnClickListener(listener);
-        view.findViewById(R.id.button41).setOnClickListener(listener);
-        view.findViewById(R.id.button42).setOnClickListener(listener);
-        view.findViewById(R.id.button43).setOnClickListener(listener);
-        view.findViewById(R.id.button44).setOnClickListener(listener);
-        view.findViewById(R.id.button45).setOnClickListener(listener);
-        view.findViewById(R.id.button46).setOnClickListener(listener);
+        getView().findViewById(R.id.button1).setOnClickListener(listener);
+        getView().findViewById(R.id.button2).setOnClickListener(listener);
+        getView().findViewById(R.id.button3).setOnClickListener(listener);
+        getView().findViewById(R.id.button4).setOnClickListener(listener);
+        getView().findViewById(R.id.button5).setOnClickListener(listener);
+        getView().findViewById(R.id.button6).setOnClickListener(listener);
+        getView().findViewById(R.id.button7).setOnClickListener(listener);
+        getView().findViewById(R.id.button8).setOnClickListener(listener);
+        getView().findViewById(R.id.button9).setOnClickListener(listener);
+        getView().findViewById(R.id.button10).setOnClickListener(listener);
+        getView().findViewById(R.id.button11).setOnClickListener(listener);
+        getView().findViewById(R.id.button12).setOnClickListener(listener);
+        getView().findViewById(R.id.button13).setOnClickListener(listener);
+        getView().findViewById(R.id.button14).setOnClickListener(listener);
+        getView().findViewById(R.id.button15).setOnClickListener(listener);
+        getView().findViewById(R.id.button16).setOnClickListener(listener);
+        getView().findViewById(R.id.button17).setOnClickListener(listener);
+        getView().findViewById(R.id.button18).setOnClickListener(listener);
+        getView().findViewById(R.id.button19).setOnClickListener(listener);
+        getView().findViewById(R.id.button20).setOnClickListener(listener);
+        getView().findViewById(R.id.button21).setOnClickListener(listener);
+        getView().findViewById(R.id.button22).setOnClickListener(listener);
+        getView().findViewById(R.id.button23).setOnClickListener(listener);
+        getView().findViewById(R.id.button24).setOnClickListener(listener);
+        getView().findViewById(R.id.button25).setOnClickListener(listener);
+        getView().findViewById(R.id.button26).setOnClickListener(listener);
+        getView().findViewById(R.id.button27).setOnClickListener(listener);
+        getView().findViewById(R.id.button28).setOnClickListener(listener);
+        getView().findViewById(R.id.button29).setOnClickListener(listener);
+        getView().findViewById(R.id.button30).setOnClickListener(listener);
+        getView().findViewById(R.id.button31).setOnClickListener(listener);
+        getView().findViewById(R.id.button32).setOnClickListener(listener);
+        getView().findViewById(R.id.button33).setOnClickListener(listener);
+        getView().findViewById(R.id.button34).setOnClickListener(listener);
+        getView().findViewById(R.id.button35).setOnClickListener(listener);
+        getView().findViewById(R.id.button36).setOnClickListener(listener);
+        getView().findViewById(R.id.button37).setOnClickListener(listener);
+        getView().findViewById(R.id.button38).setOnClickListener(listener);
+        getView().findViewById(R.id.button39).setOnClickListener(listener);
+        getView().findViewById(R.id.button40).setOnClickListener(listener);
+        getView().findViewById(R.id.button41).setOnClickListener(listener);
+        getView().findViewById(R.id.button42).setOnClickListener(listener);
+        getView().findViewById(R.id.button43).setOnClickListener(listener);
+        getView().findViewById(R.id.button44).setOnClickListener(listener);
+        getView().findViewById(R.id.button45).setOnClickListener(listener);
+        getView().findViewById(R.id.button46).setOnClickListener(listener);
     }
 
     // 濁音を清音に変換
