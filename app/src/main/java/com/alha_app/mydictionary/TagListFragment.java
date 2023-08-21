@@ -2,6 +2,7 @@ package com.alha_app.mydictionary;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ import java.util.Map;
 import java.util.logging.FileHandler;
 
 public class TagListFragment extends Fragment {
+    private final Handler handler = new Handler();
     private DictionaryActivity activity;
     private MyDictionary myDictionary;
     private List<WordEntity> wordList = new ArrayList<>();
@@ -128,5 +130,9 @@ public class TagListFragment extends Fragment {
 
             startActivity(new Intent(myDictionary, SearchResultsActivity.class));
         });
+    }
+
+    public void callPrepareList(){
+        handler.post(() -> prepareList());
     }
 }

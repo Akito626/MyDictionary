@@ -17,6 +17,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
 import com.alha_app.mydictionary.database.AppDatabase;
+import com.alha_app.mydictionary.database.DictionaryDao;
 import com.alha_app.mydictionary.database.WordDao;
 
 import java.util.List;
@@ -105,10 +106,18 @@ public class SearchResultsActivity extends AppCompatActivity {
             dao.delete(id);
 
             listData.remove(position);
+            updateDictionaryTime();
 
-            handler.post(() -> {
-               adapter.notifyDataSetChanged();
-            });
+            handler.post(() -> adapter.notifyDataSetChanged());
+        });
+    }
+
+    private void updateDictionaryTime(){
+        executor.execute(() -> {
+            AppDatabase db = Room.databaseBuilder(getApplication(),
+                    AppDatabase.class, "DICTIONARY_DATA").build();
+            DictionaryDao dao = db.dictionaryDao();
+            dao.update(myDictionary.getId(), myDictionary.getTitle(), myDictionary.getDetail(), System.currentTimeMillis());
         });
     }
 }

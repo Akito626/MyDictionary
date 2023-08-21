@@ -177,8 +177,18 @@ public class WordActivity extends AppCompatActivity {
                     AppDatabase.class, "WORD_DATA").build();
             WordDao dao = db.wordDao();
             dao.update(myDictionary.getWordId(), entity.getWord(), entity.getKana(), entity.getDetail(), entity.getTag());
+            updateDictionaryTime();
 
             handler.post(() -> Toast.makeText(myDictionary, "保存しました", Toast.LENGTH_SHORT).show());
+        });
+    }
+
+    private void updateDictionaryTime(){
+        executor.execute(() -> {
+            AppDatabase db = Room.databaseBuilder(getApplication(),
+                    AppDatabase.class, "DICTIONARY_DATA").build();
+            DictionaryDao dao = db.dictionaryDao();
+            dao.update(myDictionary.getId(), myDictionary.getTitle(), myDictionary.getDetail(), System.currentTimeMillis());
         });
     }
 }

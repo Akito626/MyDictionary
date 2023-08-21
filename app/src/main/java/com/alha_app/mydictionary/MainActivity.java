@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
             Button addButton = dialog.findViewById(R.id.add_button);
             addButton.setOnClickListener(v -> {
                 if(titleText.getText().toString().equals("")) return;
-                DictionaryEntity entity = new DictionaryEntity(titleText.getText().toString(), detailText.getText().toString());
+                DictionaryEntity entity = new DictionaryEntity(titleText.getText().toString(), detailText.getText().toString(), System.currentTimeMillis());
 
                 saveDB(entity);
                 dialog.dismiss();
