@@ -9,6 +9,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.ContextMenu;
@@ -57,6 +58,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         myDictionary = (MyDictionary) this.getApplication();
+
+        SharedPreferences preferences = getSharedPreferences("prefData", MODE_PRIVATE);
+        checkedSortItem = preferences.getInt("checkedSortItem", 0);
 
         Toolbar toolbar = findViewById(R.id.toolbar_main);
         toolbar.setTitle("ホーム");
@@ -110,17 +114,10 @@ public class MainActivity extends AppCompatActivity {
                         checkedSortItem = which;
                     })
                     .setPositiveButton("OK", (dialog, which) -> {
-                        switch (checkedSortItem){
-                            case 0:
-                                dictionaryList.sort(Comparator.comparing(DictionaryEntity::getId));
-                                break;
-                            case 1:
-                                dictionaryList.sort(Comparator.comparing(DictionaryEntity::getUpdateTime).reversed());
-                                break;
-                            case 2:
-                                Collections.sort(dictionaryList, japaneseComparator);
-                                break;
-                        }
+                        SharedPreferences preferences = getSharedPreferences("prefData", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = preferences.edit();
+                        editor.putInt("checkedSortItem", checkedSortItem);
+                        editor.commit();
                         prepareList();
                     })
                     .show();
@@ -149,6 +146,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void prepareList(){
+        // 現在選択中の方法で並び替える
+        switch (checkedSortItem){
+            case 0:
+                dictionaryList.sort(Comparator.comparing(DictionaryEntity::getId));
+                break;
+            case 1:
+                dictionaryList.sort(Comparator.comparing(DictionaryEntity::getUpdateTime).reversed());
+                break;
+            case 2:
+                Collections.sort(dictionaryList, japaneseComparator);
+                break;
+        }
+
         listData.clear();
         for(int i = 0; i < dictionaryList.size(); i++){
             Map<String, Object> item = new HashMap<>();
@@ -196,7 +206,6 @@ public class MainActivity extends AppCompatActivity {
             listData.add(listItem);
 
             handler.post(() -> {
-                adapter.notifyDataSetChanged();
                 startActivity(new Intent(getApplication(), DictionaryActivity.class));
             });
         });
