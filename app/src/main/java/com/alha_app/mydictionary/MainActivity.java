@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.room.Room;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,12 +26,16 @@ import com.alha_app.mydictionary.database.AppDatabase;
 import com.alha_app.mydictionary.database.DictionaryDao;
 import com.alha_app.mydictionary.database.DictionaryEntity;
 import com.alha_app.mydictionary.database.WordDao;
+import com.alha_app.mydictionary.database.WordEntity;
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
 
+import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -37,10 +43,13 @@ import java.util.concurrent.Executors;
 public class MainActivity extends AppCompatActivity {
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final Handler handler = new Handler();
+    private final Collator collator = Collator.getInstance(Locale.JAPANESE);
     private List<Map<String, Object>> listData = new ArrayList<>();
     private SimpleAdapter adapter;
     private List<DictionaryEntity> dictionaryList = new ArrayList<>();
     private MyDictionary myDictionary;
+    private Comparator<DictionaryEntity> japaneseComparator;
+    private int checkedSortItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +62,8 @@ public class MainActivity extends AppCompatActivity {
         toolbar.setTitle("ホーム");
         setSupportActionBar(toolbar);
 
-        loadDB();
+        // 五十音順にソートするComparator
+        japaneseComparator = (d1, d2) -> collator.compare(d1.getTitle(), d2.getTitle());
     }
 
     @Override
@@ -71,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item){
-        if(item.getItemId() == R.id.action_add){
+        if(item.getItemId() == R.id.action_add) {
             Dialog dialog = new Dialog(this);
             dialog.setContentView(R.layout.add_dictionary_dialog);
             dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
@@ -85,13 +95,35 @@ public class MainActivity extends AppCompatActivity {
 
             Button addButton = dialog.findViewById(R.id.add_button);
             addButton.setOnClickListener(v -> {
-                if(titleText.getText().toString().equals("")) return;
+                if (titleText.getText().toString().equals("")) return;
                 DictionaryEntity entity = new DictionaryEntity(titleText.getText().toString(), detailText.getText().toString(), System.currentTimeMillis());
 
                 saveDB(entity);
                 dialog.dismiss();
             });
             dialog.show();
+        } else if(item.getItemId() == R.id.action_sort){
+            String[] sortItem = {"追加順", "更新順", "五十音順"};
+            new AlertDialog.Builder(this)
+                    .setTitle("並び替え")
+                    .setSingleChoiceItems(sortItem, checkedSortItem, (dialog, which) -> {
+                        checkedSortItem = which;
+                    })
+                    .setPositiveButton("OK", (dialog, which) -> {
+                        switch (checkedSortItem){
+                            case 0:
+                                dictionaryList.sort(Comparator.comparing(DictionaryEntity::getId));
+                                break;
+                            case 1:
+                                dictionaryList.sort(Comparator.comparing(DictionaryEntity::getUpdateTime).reversed());
+                                break;
+                            case 2:
+                                Collections.sort(dictionaryList, japaneseComparator);
+                                break;
+                        }
+                        prepareList();
+                    })
+                    .show();
         } else if(item.getItemId() == R.id.action_license){
             OssLicensesMenuActivity.setActivityTitle("ライセンス");
             startActivity(new Intent(getApplication(), OssLicensesMenuActivity.class));
