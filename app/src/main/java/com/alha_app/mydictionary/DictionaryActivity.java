@@ -76,7 +76,6 @@ public class DictionaryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_dictionary);
 
         myDictionary = (MyDictionary) this.getApplication();
-        tags.add("");
 
         Toolbar toolbar = findViewById(R.id.toolbar_dictionary);
         toolbar.setTitle(myDictionary.getTitle());
@@ -280,7 +279,7 @@ public class DictionaryActivity extends AppCompatActivity {
             myDictionary.setWordList(wordList);
 
             for(WordEntity entity: wordList){
-                if(!tags.contains(entity.getTag())){
+                if(!entity.getTag().equals("") && !tags.contains(entity.getTag())){
                     tags.add(entity.getTag());
                 }
             }
