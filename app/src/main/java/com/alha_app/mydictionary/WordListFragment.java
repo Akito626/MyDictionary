@@ -138,7 +138,7 @@ public class WordListFragment extends Fragment {
             myDictionary.setWord(listData.get(position).get("list_title_text").toString());
             myDictionary.setWordKana(listData.get(position).get("kana").toString());
             myDictionary.setWordDetail(listData.get(position).get("list_detail_text").toString());
-            myDictionary.setTag(listData.get(position).get("tag").toString());
+            myDictionary.setTag1(listData.get(position).get("tag").toString());
 
             startActivity(new Intent(myDictionary, WordActivity.class));
         });
