@@ -91,7 +91,7 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="center_vertical|right"
                     android:backgroundTint="@color/white"
-                    android:text="編集"
+                    android:text="追加"
                     android:textColor="#dddddd"
                     android:textSize="20sp" />
             </FrameLayout>

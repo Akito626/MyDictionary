@@ -124,20 +124,89 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:textSize="20sp"
-                    android:text="編集"
+                    android:text="追加"
                     android:textColor="#0000ff"
                     android:backgroundTint="@color/white"
                     android:layout_gravity="center_vertical|right"/>
             </FrameLayout>
 
-            <TextView
-                android:id="@+id/tag_text"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textMultiLine"
-                android:textSize="20sp"
-                android:gravity="top|left"
-                android:layout_margin="10dp"/>
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tag_text1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.8"
+                    android:layout_margin="10dp"
+                    android:gravity="top|left"
+                    android:inputType="textMultiLine"
+                    android:textSize="20sp" />
+
+                <ImageButton
+                    android:id="@+id/delete_button1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_close"
+                    android:scaleType="fitCenter"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:visibility="invisible"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tag_text2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.8"
+                    android:layout_margin="10dp"
+                    android:gravity="top|left"
+                    android:inputType="textMultiLine"
+                    android:textSize="20sp" />
+
+                <ImageButton
+                    android:id="@+id/delete_button2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_close"
+                    android:scaleType="fitCenter"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:visibility="invisible"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tag_text3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.8"
+                    android:layout_margin="10dp"
+                    android:gravity="top|left"
+                    android:inputType="textMultiLine"
+                    android:textSize="20sp" />
+
+                <ImageButton
+                    android:id="@+id/delete_button3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_close"
+                    android:scaleType="fitCenter"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:visibility="invisible"/>
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 

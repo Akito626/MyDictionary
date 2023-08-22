@@ -10,6 +10,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -52,11 +53,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class DictionaryActivity extends AppCompatActivity {
+    private final int MAX_TAG = 3;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final Handler handler = new Handler();
     private final Collator collator = Collator.getInstance(Locale.JAPANESE);
-    private static final String dakuon = "がぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽ";
-    private static final String seion = "かきくけこさしすせそたちつてとはひふへほはひふへほ";
     private Comparator<WordEntity> japaneseComparator;
     private List<Fragment> fragmentList;
     private MyDictionary myDictionary;
@@ -69,6 +69,7 @@ public class DictionaryActivity extends AppCompatActivity {
 
     // 辞書情報を編集中かどうか
     private boolean isEdit;
+    private int tagCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,15 +127,24 @@ public class DictionaryActivity extends AppCompatActivity {
 
             choicePosition = 0;
 
-            TextView tagText = dialog.findViewById(R.id.tag_text);
+            TextView tagText1 = dialog.findViewById(R.id.tag_text1);
+            TextView tagText2 = dialog.findViewById(R.id.tag_text2);
+            TextView tagText3 = dialog.findViewById(R.id.tag_text3);
+            ImageButton deleteButton1 = dialog.findViewById(R.id.delete_button1);
+            ImageButton deleteButton2 = dialog.findViewById(R.id.delete_button2);
+            ImageButton deleteButton3 = dialog.findViewById(R.id.delete_button3);
 
             Button tagButton = dialog.findViewById(R.id.tag_button);
             tagButton.setOnClickListener(v -> {
+                if(tagCount >= MAX_TAG) {
+                    Toast.makeText(myDictionary, "タグは3つまでしか追加できません", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 // タグを編集するダイアログ
                 new AlertDialog.Builder(this)
                         .setTitle("タグ")
                         .setSingleChoiceItems(tags.stream().toArray(String[]::new), choicePosition, (dialog12, which) -> {
-                            tagText.setText(tags.get(which));
+                            //tagText.setText(tags.get(which));
                             choicePosition = which;
                         })
                         .setNeutralButton("新規タグ", (dialog1, which) -> {
@@ -154,14 +164,49 @@ public class DictionaryActivity extends AppCompatActivity {
                                         }
                                         tags.add(editText.getText().toString());
                                         Collections.sort(tags, collator);
-                                        tagText.setText(editText.getText().toString());
+                                        switch (tagCount){
+                                            case 0:
+                                                tagText1.setText(editText.getText().toString());
+                                                deleteButton1.setVisibility(View.VISIBLE);
+                                                break;
+                                            case 1:
+                                                tagText2.setText(editText.getText().toString());
+                                                deleteButton2.setVisibility(View.VISIBLE);
+                                                break;
+                                            case 2:
+                                                tagText3.setText(editText.getText().toString());
+                                                deleteButton3.setVisibility(View.VISIBLE);
+                                                break;
+                                        }
+                                        tagCount++;
 
                                         myDictionary.setTags(tags);
                                     })
                                     .setCancelable(false)
                                     .show();
                         })
-                        .setPositiveButton("OK", null)
+                        .setPositiveButton("OK", (dialog13, which) -> {
+                            if(tags.get(choicePosition).equals(tagText1.getText().toString()) || tags.get(choicePosition).equals(tagText2.getText().toString())
+                                    || tags.get(choicePosition).equals(tagText3.getText().toString())){
+                                Toast.makeText(myDictionary, "すでについているタグです", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                            switch (tagCount){
+                                case 0:
+                                    tagText1.setText(tags.get(choicePosition));
+                                    deleteButton1.setVisibility(View.VISIBLE);
+                                    break;
+                                case 1:
+                                    tagText2.setText(tags.get(choicePosition));
+                                    deleteButton2.setVisibility(View.VISIBLE);
+                                    break;
+                                case 2:
+                                    tagText3.setText(tags.get(choicePosition));
+                                    deleteButton3.setVisibility(View.VISIBLE);
+                                    break;
+                            }
+                            tagCount++;
+                        })
                         .setCancelable(false)
                         .show();
             });
@@ -179,10 +224,50 @@ public class DictionaryActivity extends AppCompatActivity {
                 TextView kanaText = dialog.findViewById(R.id.kana_text);
                 TextView detailText = dialog.findViewById(R.id.detail_text);
                 WordEntity entity = new WordEntity(myDictionary.getId(), wordText.getText().toString(),
-                        kanaText.getText().toString(), detailText.getText().toString(), tagText.getText().toString().trim());
+                        kanaText.getText().toString(), detailText.getText().toString(), tagText1.getText().toString().trim());
 
                 saveDB(entity);
                 dialog.dismiss();
+            });
+
+            deleteButton1.setOnClickListener(v -> {
+                tagText1.setText(tagText2.getText().toString());
+                tagText2.setText(tagText3.getText().toString());
+                tagText3.setText("");
+
+                switch (tagCount){
+                    case 1:
+                        deleteButton1.setVisibility(View.INVISIBLE);
+                        break;
+                    case 2:
+                        deleteButton2.setVisibility(View.INVISIBLE);
+                        break;
+                    case 3:
+                        deleteButton3.setVisibility(View.INVISIBLE);
+                        break;
+                }
+                tagCount--;
+            });
+
+            deleteButton2.setOnClickListener(v -> {
+                tagText2.setText(tagText3.getText().toString());
+                tagText3.setText("");
+
+                switch (tagCount){
+                    case 2:
+                        deleteButton2.setVisibility(View.INVISIBLE);
+                        break;
+                    case 3:
+                        deleteButton3.setVisibility(View.INVISIBLE);
+                        break;
+                }
+                tagCount--;
+            });
+
+            deleteButton3.setOnClickListener(v -> {
+                tagText3.setText("");
+                deleteButton3.setVisibility(View.INVISIBLE);
+                tagCount--;
             });
 
             dialog.show();
