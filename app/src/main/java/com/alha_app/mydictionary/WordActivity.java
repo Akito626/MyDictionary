@@ -140,7 +140,7 @@ public class WordActivity extends AppCompatActivity {
 
                 myDictionary.setWord(wordText.getText().toString());
                 myDictionary.setWordKana(kanaText.getText().toString());
-                myDictionary.setDetail(detailText.getText().toString());
+                myDictionary.setWordDetail(detailText.getText().toString());
                 myDictionary.setTag(tagText.getText().toString());
 
                 WordEntity entity = new WordEntity(myDictionary.getId(), wordText.getText().toString(),
