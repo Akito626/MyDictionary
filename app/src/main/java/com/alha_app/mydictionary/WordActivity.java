@@ -25,6 +25,7 @@ import com.alha_app.mydictionary.database.WordDao;
 import com.alha_app.mydictionary.database.WordEntity;
 
 import java.text.Collator;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
@@ -178,6 +179,15 @@ public class WordActivity extends AppCompatActivity {
             WordDao dao = db.wordDao();
             dao.update(myDictionary.getWordId(), entity.getWord(), entity.getKana(), entity.getDetail(), entity.getTag());
             updateDictionaryTime();
+
+            List<WordEntity> wordList = myDictionary.getWordList();
+            for(int i = 0; i < wordList.size(); i++){
+                if(wordList.get(i).getId() == myDictionary.getWordId()){
+                    wordList.set(i, entity);
+                    break;
+                }
+            }
+            myDictionary.setWordList(wordList);
 
             handler.post(() -> Toast.makeText(myDictionary, "保存しました", Toast.LENGTH_SHORT).show());
         });

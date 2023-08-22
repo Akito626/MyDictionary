@@ -59,8 +59,9 @@ public class IndexFragment extends Fragment {
 
             List<Map<String, Object>> searchListData = new ArrayList<>();
             for(WordEntity entity: wordList){
+                String word = convVoicedSound(entity.getWord());
                 String kana = convVoicedSound(entity.getKana());
-                if(kana.startsWith(button.getText().toString())) {
+                if(word.startsWith(button.getText().toString()) || kana.startsWith(button.getText().toString())) {
                     Map<String, Object> item = new HashMap<>();
                     item.put("list_title_text", entity.getWord());
                     item.put("list_detail_text", entity.getDetail());
