@@ -115,13 +115,15 @@ public class TagListFragment extends Fragment {
 
             List<Map<String, Object>> searchListData = new ArrayList<>();
             for(WordEntity entity: wordList){
-                if(entity.getTag().equals(tag)) {
+                if(entity.getTag1().equals(tag) || entity.getTag2().equals(tag) || entity.getTag3().equals(tag)) {
                     Map<String, Object> item = new HashMap<>();
                     item.put("list_title_text", entity.getWord());
                     item.put("list_detail_text", entity.getDetail());
                     item.put("id", entity.getId());
                     item.put("kana", entity.getKana());
-                    item.put("tag", entity.getTag());
+                    item.put("tag1", entity.getTag1());
+                    item.put("tag2", entity.getTag2());
+                    item.put("tag3", entity.getTag3());
                     searchListData.add(item);
                 }
             }

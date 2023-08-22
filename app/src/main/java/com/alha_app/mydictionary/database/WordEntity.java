@@ -12,14 +12,15 @@ public class WordEntity {
     private String word;
     private String kana;
     private String detail;
-    private String tag;
+    private String tag1 = "";
+    private String tag2 = "";
+    private String tag3 = "";
 
-    public WordEntity(int group, String word, String kana, String detail, String tag){
+    public WordEntity(int group, String word, String kana, String detail){
         this.group = group;
         this.word = word;
         this.kana = kana;
         this.detail = detail;
-        this.tag = tag;
     }
 
     // Getter
@@ -43,8 +44,16 @@ public class WordEntity {
         return detail;
     }
 
-    public String getTag() {
-        return tag;
+    public String getTag1() {
+        return tag1;
+    }
+
+    public String getTag2() {
+        return tag2;
+    }
+
+    public String getTag3() {
+        return tag3;
     }
 
     // Setter
@@ -68,7 +77,15 @@ public class WordEntity {
         this.detail = detail;
     }
 
-    public void setTag(String tag) {
-        this.tag = tag;
+    public void setTag1(String tag1) {
+        this.tag1 = tag1;
+    }
+
+    public void setTag2(String tag2) {
+        this.tag2 = tag2;
+    }
+
+    public void setTag3(String tag3) {
+        this.tag3 = tag3;
     }
 }
