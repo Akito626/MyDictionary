@@ -258,10 +258,6 @@ public class DictionaryActivity extends AppCompatActivity {
                     WordListFragment wordFragment = (WordListFragment) fragment;
                     wordFragment.addWord(entity);
                     break;
-                case 1:
-                    break;
-                case 2:
-                    break;
                 case 3:
                     fragment = fragmentList.get(3);
                     TagListFragment tagListFragment = (TagListFragment) fragment;

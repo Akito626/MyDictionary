@@ -38,20 +38,14 @@ public class EnglishIndexFragment extends Fragment {
         activity = (DictionaryActivity) getActivity();
         myDictionary = (MyDictionary) activity.getApplication();
 
-        wordList = myDictionary.getWordList();
-    }
-
-    @Override
-    public void onResume(){
-        super.onResume();
-
-        wordList = myDictionary.getWordList();
         prepareButton();
     }
 
     private void prepareButton(){
         // 索引のボタン全てにlistenerをセット
         View.OnClickListener listener = v -> {
+            wordList = myDictionary.getWordList();
+
             Button button = (Button) v;
 
             List<Map<String, Object>> searchListData = new ArrayList<>();
