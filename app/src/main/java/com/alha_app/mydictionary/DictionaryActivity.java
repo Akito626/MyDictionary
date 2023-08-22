@@ -230,6 +230,7 @@ public class DictionaryActivity extends AppCompatActivity {
                 dialog.dismiss();
             });
 
+            // タグの削除ボタンのリスナー
             deleteButton1.setOnClickListener(v -> {
                 tagText1.setText(tagText2.getText().toString());
                 tagText2.setText(tagText3.getText().toString());

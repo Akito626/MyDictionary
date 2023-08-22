@@ -77,9 +77,8 @@ public class WordActivity extends AppCompatActivity {
         kanaText.setText(myDictionary.getWordKana());
         detailText.setText(myDictionary.getWordDetail());
 
-        if(!myDictionary.getTag().equals("")) {
-            tagText1.setText(myDictionary.getTag());
-            deleteButton1.setVisibility(View.VISIBLE);
+        if(!myDictionary.getTag1().equals("")) {
+            tagText1.setText(myDictionary.getTag1());
             tagCount++;
         }
 
@@ -223,6 +222,9 @@ public class WordActivity extends AppCompatActivity {
             TextView tagText1 = findViewById(R.id.tag_text1);
             TextView tagText2 = findViewById(R.id.tag_text2);
             TextView tagText3 = findViewById(R.id.tag_text3);
+            ImageButton deleteButton1 = findViewById(R.id.delete_button1);
+            ImageButton deleteButton2 = findViewById(R.id.delete_button2);
+            ImageButton deleteButton3 = findViewById(R.id.delete_button3);
             Button tagButton = findViewById(R.id.tag_button);
 
             if(isEdit) {
@@ -233,20 +235,24 @@ public class WordActivity extends AppCompatActivity {
                 kanaText.setEnabled(false);
                 detailText.setEnabled(false);
 
+                deleteButton1.setVisibility(View.INVISIBLE);
+                deleteButton2.setVisibility(View.INVISIBLE);
+                deleteButton3.setVisibility(View.INVISIBLE);
+
                 wordText.setBackgroundColor(Color.parseColor("#00000000"));
                 kanaText.setBackgroundColor(Color.parseColor("#00000000"));
                 detailText.setBackgroundColor(Color.parseColor("#00000000"));
                 tagButton.setTextColor(Color.parseColor("#dddddd"));
 
                 if(wordText.getText().toString().equals(myDictionary.getWord()) && kanaText.getText().toString().equals(myDictionary.getWordKana())
-                    && detailText.getText().toString().equals(myDictionary.getWordDetail()) && tagText1.getText().toString().equals(myDictionary.getTag())){
+                    && detailText.getText().toString().equals(myDictionary.getWordDetail()) && tagText1.getText().toString().equals(myDictionary.getTag1())){
                     return false;
                 }
 
                 myDictionary.setWord(wordText.getText().toString());
                 myDictionary.setWordKana(kanaText.getText().toString());
                 myDictionary.setWordDetail(detailText.getText().toString());
-                myDictionary.setTag(tagText1.getText().toString());
+                myDictionary.setTag1(tagText1.getText().toString());
 
                 WordEntity entity = new WordEntity(myDictionary.getId(), wordText.getText().toString(),
                         kanaText.getText().toString(), detailText.getText().toString(), tagText1.getText().toString());
@@ -258,6 +264,20 @@ public class WordActivity extends AppCompatActivity {
                 wordText.setEnabled(true);
                 kanaText.setEnabled(true);
                 detailText.setEnabled(true);
+
+                switch (tagCount){
+                    case 1:
+                        deleteButton1.setVisibility(View.VISIBLE);
+                        break;
+                    case 2:
+                        deleteButton1.setVisibility(View.VISIBLE);
+                        deleteButton2.setVisibility(View.VISIBLE);
+                        break;
+                    case 3:
+                        deleteButton1.setVisibility(View.VISIBLE);
+                        deleteButton2.setVisibility(View.VISIBLE);
+                        deleteButton3.setVisibility(View.VISIBLE);
+                }
 
                 wordText.setBackgroundColor(Color.parseColor("#dddddd"));
                 kanaText.setBackgroundColor(Color.parseColor("#dddddd"));
