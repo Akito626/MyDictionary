@@ -30,6 +30,7 @@ import com.alha_app.mydictionary.database.WordEntity;
 
 import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
@@ -37,8 +38,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class WordActivity extends AppCompatActivity {
+    private final int MAX_TAG = 3;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final Handler handler = new Handler();
+    private final Collator collator = Collator.getInstance(Locale.JAPANESE);
     private MyDictionary myDictionary;
     private boolean isEdit;
     private List<String> tags;
@@ -83,8 +86,7 @@ public class WordActivity extends AppCompatActivity {
         Button button = findViewById(R.id.tag_button);
         button.setOnClickListener(v -> {
             if(!isEdit) return;
-            System.out.println(tagCount);
-            if(tagCount >= 3) {
+            if(tagCount >= MAX_TAG) {
                 Toast.makeText(myDictionary, "タグは3つまでしか追加できません", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -111,6 +113,8 @@ public class WordActivity extends AppCompatActivity {
                                         return;
                                     }
                                     tags.add(editText.getText().toString());
+                                    Collections.sort(tags, collator);
+
                                     switch (tagCount){
                                         case 0:
                                             tagText1.setText(editText.getText().toString());
@@ -126,6 +130,8 @@ public class WordActivity extends AppCompatActivity {
                                             break;
                                     }
                                     tagCount++;
+
+                                    myDictionary.setTags(tags);
                                 })
                                 .setCancelable(false)
                                 .show();
@@ -214,7 +220,9 @@ public class WordActivity extends AppCompatActivity {
             EditText wordText = findViewById(R.id.word_text);
             EditText kanaText = findViewById(R.id.kana_text);
             EditText detailText = findViewById(R.id.detail_text);
-            TextView tagText1 = findViewById(R.id.tag_text);
+            TextView tagText1 = findViewById(R.id.tag_text1);
+            TextView tagText2 = findViewById(R.id.tag_text2);
+            TextView tagText3 = findViewById(R.id.tag_text3);
             Button tagButton = findViewById(R.id.tag_button);
 
             if(isEdit) {
