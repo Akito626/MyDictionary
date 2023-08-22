@@ -32,8 +32,10 @@ import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -67,9 +69,9 @@ public class WordActivity extends AppCompatActivity {
         EditText wordText = findViewById(R.id.word_text);
         EditText kanaText = findViewById(R.id.kana_text);
         EditText detailText = findViewById(R.id.detail_text);
-        TextView tagText1 = findViewById(R.id.tag_text1);
-        TextView tagText2 = findViewById(R.id.tag_text2);
-        TextView tagText3 = findViewById(R.id.tag_text3);
+        Button tagText1 = findViewById(R.id.tag_text1);
+        Button tagText2 = findViewById(R.id.tag_text2);
+        Button tagText3 = findViewById(R.id.tag_text3);
         ImageButton deleteButton1 = findViewById(R.id.delete_button1);
         ImageButton deleteButton2 = findViewById(R.id.delete_button2);
         ImageButton deleteButton3 = findViewById(R.id.delete_button3);
@@ -170,6 +172,36 @@ public class WordActivity extends AppCompatActivity {
                     .show();
         });
 
+        View.OnClickListener listener = v -> {
+            if(isEdit) return;
+
+            Button b = (Button) v;
+            String tag = b.getText().toString();
+            List<WordEntity> wordList = myDictionary.getWordList();
+            List<Map<String, Object>> searchListData = new ArrayList<>();
+            for(WordEntity entity: wordList){
+                if(entity.getTag1().equals(tag) || entity.getTag2().equals(tag) || entity.getTag3().equals(tag)) {
+                    Map<String, Object> item = new HashMap<>();
+                    item.put("list_title_text", entity.getWord());
+                    item.put("list_detail_text", entity.getDetail());
+                    item.put("id", entity.getId());
+                    item.put("kana", entity.getKana());
+                    item.put("tag1", entity.getTag1());
+                    item.put("tag2", entity.getTag2());
+                    item.put("tag3", entity.getTag3());
+                    searchListData.add(item);
+                }
+            }
+
+            myDictionary.setSearchString(tag);
+            myDictionary.setSearchList(searchListData);
+
+            startActivity(new Intent(myDictionary, SearchResultsActivity.class));
+        };
+        tagText1.setOnClickListener(listener);
+        tagText2.setOnClickListener(listener);
+        tagText3.setOnClickListener(listener);
+
         deleteButton1.setOnClickListener(v -> {
             tagText1.setText(tagText2.getText().toString());
             tagText2.setText(tagText3.getText().toString());
@@ -227,9 +259,9 @@ public class WordActivity extends AppCompatActivity {
             EditText wordText = findViewById(R.id.word_text);
             EditText kanaText = findViewById(R.id.kana_text);
             EditText detailText = findViewById(R.id.detail_text);
-            TextView tagText1 = findViewById(R.id.tag_text1);
-            TextView tagText2 = findViewById(R.id.tag_text2);
-            TextView tagText3 = findViewById(R.id.tag_text3);
+            Button tagText1 = findViewById(R.id.tag_text1);
+            Button tagText2 = findViewById(R.id.tag_text2);
+            Button tagText3 = findViewById(R.id.tag_text3);
             ImageButton deleteButton1 = findViewById(R.id.delete_button1);
             ImageButton deleteButton2 = findViewById(R.id.delete_button2);
             ImageButton deleteButton3 = findViewById(R.id.delete_button3);
