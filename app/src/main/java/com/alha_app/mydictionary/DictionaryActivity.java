@@ -388,6 +388,11 @@ public class DictionaryActivity extends AppCompatActivity {
 
             Collections.sort(tags, collator);
             myDictionary.setTags(tags);
+
+            if(wordList.get(0) != null){
+                WordListFragment wordFragment = (WordListFragment) fragmentList.get(0);
+                wordFragment.updateList();
+            }
         });
     }
 

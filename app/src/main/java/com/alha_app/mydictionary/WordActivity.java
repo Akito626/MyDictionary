@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,6 +50,7 @@ public class WordActivity extends AppCompatActivity {
     private List<String> tags;
     private int choicePosition;
     private int tagCount;
+    private boolean isSave;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +65,7 @@ public class WordActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         isEdit = false;
+        isSave = false;
         tags = myDictionary.getTags();
 
         // テキストをセット
@@ -173,7 +176,7 @@ public class WordActivity extends AppCompatActivity {
         });
 
         View.OnClickListener listener = v -> {
-            if(isEdit) return;
+            if(isEdit || isSave) return;
 
             Button b = (Button) v;
             String tag = b.getText().toString();
@@ -252,9 +255,12 @@ public class WordActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item){
         if(item.getItemId() == android.R.id.home){
-            if(!isEdit) {
-                finish();
+            if(isEdit) {
+                Toast.makeText(myDictionary, "編集中です", Toast.LENGTH_SHORT).show();
+                return false;
             }
+            if(isSave) return false;
+            finish();
         } else if(item.getItemId() == R.id.action_edit){
             EditText wordText = findViewById(R.id.word_text);
             EditText kanaText = findViewById(R.id.kana_text);
@@ -266,9 +272,12 @@ public class WordActivity extends AppCompatActivity {
             ImageButton deleteButton2 = findViewById(R.id.delete_button2);
             ImageButton deleteButton3 = findViewById(R.id.delete_button3);
             Button tagButton = findViewById(R.id.tag_button);
+            ProgressBar bar = findViewById(R.id.loading_bar);
 
             if(isEdit) {
+                bar.setVisibility(View.VISIBLE);
                 isEdit = false;
+                isSave = true;
                 item.setIcon(R.drawable.ic_edit);
 
                 wordText.setEnabled(false);
@@ -284,9 +293,12 @@ public class WordActivity extends AppCompatActivity {
                 detailText.setBackgroundColor(Color.parseColor("#00000000"));
                 tagButton.setTextColor(Color.parseColor("#dddddd"));
 
+                // 変更がなければ保存しない
                 if(wordText.getText().toString().equals(myDictionary.getWord()) && kanaText.getText().toString().equals(myDictionary.getWordKana())
                     && detailText.getText().toString().equals(myDictionary.getWordDetail()) && tagText1.getText().toString().equals(myDictionary.getTag1())
                     && tagText2.getText().toString().equals(myDictionary.getTag2()) && tagText3.getText().toString().equals(myDictionary.getTag3())){
+                    isSave = false;
+                    bar.setVisibility(View.INVISIBLE);
                     return false;
                 }
 
@@ -357,16 +369,14 @@ public class WordActivity extends AppCompatActivity {
             dao.update(myDictionary.getWordId(), entity.getWord(), entity.getKana(), entity.getDetail(), entity.getTag1(), entity.getTag2(), entity.getTag3());
             updateDictionaryTime();
 
-            List<WordEntity> wordList = myDictionary.getWordList();
-            for(int i = 0; i < wordList.size(); i++){
-                if(wordList.get(i).getId() == myDictionary.getWordId()){
-                    wordList.set(i, entity);
-                    break;
-                }
-            }
-            myDictionary.setWordList(wordList);
+            isSave = false;
 
-            handler.post(() -> Toast.makeText(myDictionary, "保存しました", Toast.LENGTH_SHORT).show());
+            ProgressBar bar = findViewById(R.id.loading_bar);
+
+            handler.post(() -> {
+                bar.setVisibility(View.INVISIBLE);
+                Toast.makeText(myDictionary, "保存しました", Toast.LENGTH_SHORT).show();
+            });
         });
     }
 
