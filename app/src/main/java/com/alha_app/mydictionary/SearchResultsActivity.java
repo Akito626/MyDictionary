@@ -90,7 +90,9 @@ public class SearchResultsActivity extends AppCompatActivity {
             myDictionary.setWord(listData.get(position).get("list_title_text").toString());
             myDictionary.setWordKana(listData.get(position).get("kana").toString());
             myDictionary.setWordDetail(listData.get(position).get("list_detail_text").toString());
-            myDictionary.setTag1(listData.get(position).get("tag").toString());
+            myDictionary.setTag1(listData.get(position).get("tag1").toString());
+            myDictionary.setTag2(listData.get(position).get("tag2").toString());
+            myDictionary.setTag3(listData.get(position).get("tag3").toString());
 
             startActivity(new Intent(getApplication(), WordActivity.class));
         });

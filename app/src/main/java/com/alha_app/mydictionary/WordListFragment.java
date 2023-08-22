@@ -117,7 +117,9 @@ public class WordListFragment extends Fragment {
             item.put("list_detail_text", entity.getDetail());
             item.put("id", entity.getId());
             item.put("kana", entity.getKana());
-            item.put("tag", entity.getTag());
+            item.put("tag1", entity.getTag1());
+            item.put("tag2", entity.getTag2());
+            item.put("tag3", entity.getTag3());
             listData.add(item);
         }
 
@@ -138,7 +140,9 @@ public class WordListFragment extends Fragment {
             myDictionary.setWord(listData.get(position).get("list_title_text").toString());
             myDictionary.setWordKana(listData.get(position).get("kana").toString());
             myDictionary.setWordDetail(listData.get(position).get("list_detail_text").toString());
-            myDictionary.setTag1(listData.get(position).get("tag").toString());
+            myDictionary.setTag1(listData.get(position).get("tag1").toString());
+            myDictionary.setTag2(listData.get(position).get("tag2").toString());
+            myDictionary.setTag3(listData.get(position).get("tag3").toString());
 
             startActivity(new Intent(myDictionary, WordActivity.class));
         });
@@ -163,7 +167,9 @@ public class WordListFragment extends Fragment {
                 item.put("list_detail_text", entity.getDetail());
                 item.put("id", entity.getId());
                 item.put("kana", entity.getKana());
-                item.put("tag", entity.getTag());
+                item.put("tag1", entity.getTag1());
+                item.put("tag2", entity.getTag2());
+                item.put("tag3", entity.getTag3());
                 listData.add(item);
             }
         }
@@ -178,7 +184,9 @@ public class WordListFragment extends Fragment {
         item.put("list_detail_text", entity.getDetail());
         item.put("id", entity.getId());
         item.put("kana", entity.getKana());
-        item.put("tag", entity.getTag());
+        item.put("tag1", entity.getTag1());
+        item.put("tag2", entity.getTag2());
+        item.put("tag3", entity.getTag3());
         listData.add(item);
 
         handler.post(() -> adapter.notifyDataSetChanged());

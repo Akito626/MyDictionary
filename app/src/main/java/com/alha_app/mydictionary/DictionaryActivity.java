@@ -125,6 +125,7 @@ public class DictionaryActivity extends AppCompatActivity {
             dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
             dialog.setCancelable(false);
 
+            tagCount = 0;
             choicePosition = 0;
 
             TextView tagText1 = dialog.findViewById(R.id.tag_text1);
@@ -144,7 +145,6 @@ public class DictionaryActivity extends AppCompatActivity {
                 new AlertDialog.Builder(this)
                         .setTitle("タグ")
                         .setSingleChoiceItems(tags.stream().toArray(String[]::new), choicePosition, (dialog12, which) -> {
-                            //tagText.setText(tags.get(which));
                             choicePosition = which;
                         })
                         .setNeutralButton("新規タグ", (dialog1, which) -> {
@@ -224,7 +224,17 @@ public class DictionaryActivity extends AppCompatActivity {
                 TextView kanaText = dialog.findViewById(R.id.kana_text);
                 TextView detailText = dialog.findViewById(R.id.detail_text);
                 WordEntity entity = new WordEntity(myDictionary.getId(), wordText.getText().toString(),
-                        kanaText.getText().toString(), detailText.getText().toString(), tagText1.getText().toString().trim());
+                        kanaText.getText().toString(), detailText.getText().toString());
+
+                if(!tagText1.getText().toString().equals("")){
+                    entity.setTag1(tagText1.getText().toString().trim());
+                }
+                if(!tagText2.getText().toString().equals("")){
+                    entity.setTag2(tagText2.getText().toString().trim());
+                }
+                if(!tagText3.getText().toString().equals("")){
+                    entity.setTag3(tagText3.getText().toString().trim());
+                }
 
                 saveDB(entity);
                 dialog.dismiss();
@@ -365,8 +375,14 @@ public class DictionaryActivity extends AppCompatActivity {
             myDictionary.setWordList(wordList);
 
             for(WordEntity entity: wordList){
-                if(!entity.getTag().equals("") && !tags.contains(entity.getTag())){
-                    tags.add(entity.getTag());
+                if(!entity.getTag1().equals("") && !tags.contains(entity.getTag1())){
+                    tags.add(entity.getTag1());
+                }
+                if(!entity.getTag2().equals("") && !tags.contains(entity.getTag2())){
+                    tags.add(entity.getTag2());
+                }
+                if(!entity.getTag3().equals("") && !tags.contains(entity.getTag3())){
+                    tags.add(entity.getTag3());
                 }
             }
 

@@ -81,6 +81,14 @@ public class WordActivity extends AppCompatActivity {
             tagText1.setText(myDictionary.getTag1());
             tagCount++;
         }
+        if(!myDictionary.getTag2().equals("")) {
+            tagText2.setText(myDictionary.getTag2());
+            tagCount++;
+        }
+        if(!myDictionary.getTag3().equals("")) {
+            tagText3.setText(myDictionary.getTag3());
+            tagCount++;
+        }
 
         Button button = findViewById(R.id.tag_button);
         button.setOnClickListener(v -> {
@@ -245,7 +253,8 @@ public class WordActivity extends AppCompatActivity {
                 tagButton.setTextColor(Color.parseColor("#dddddd"));
 
                 if(wordText.getText().toString().equals(myDictionary.getWord()) && kanaText.getText().toString().equals(myDictionary.getWordKana())
-                    && detailText.getText().toString().equals(myDictionary.getWordDetail()) && tagText1.getText().toString().equals(myDictionary.getTag1())){
+                    && detailText.getText().toString().equals(myDictionary.getWordDetail()) && tagText1.getText().toString().equals(myDictionary.getTag1())
+                    && tagText2.getText().toString().equals(myDictionary.getTag2()) && tagText3.getText().toString().equals(myDictionary.getTag3())){
                     return false;
                 }
 
@@ -253,9 +262,21 @@ public class WordActivity extends AppCompatActivity {
                 myDictionary.setWordKana(kanaText.getText().toString());
                 myDictionary.setWordDetail(detailText.getText().toString());
                 myDictionary.setTag1(tagText1.getText().toString());
+                myDictionary.setTag2(tagText2.getText().toString());
+                myDictionary.setTag3(tagText3.getText().toString());
 
                 WordEntity entity = new WordEntity(myDictionary.getId(), wordText.getText().toString(),
-                        kanaText.getText().toString(), detailText.getText().toString(), tagText1.getText().toString());
+                        kanaText.getText().toString(), detailText.getText().toString());
+
+                if(!tagText1.getText().toString().equals("")){
+                    entity.setTag1(tagText1.getText().toString().trim());
+                }
+                if(!tagText2.getText().toString().equals("")){
+                    entity.setTag2(tagText2.getText().toString().trim());
+                }
+                if(!tagText3.getText().toString().equals("")){
+                    entity.setTag3(tagText3.getText().toString().trim());
+                }
                 updateDB(entity);
             } else {
                 isEdit = true;
@@ -301,7 +322,7 @@ public class WordActivity extends AppCompatActivity {
             AppDatabase db = Room.databaseBuilder(getApplication(),
                     AppDatabase.class, "WORD_DATA").build();
             WordDao dao = db.wordDao();
-            dao.update(myDictionary.getWordId(), entity.getWord(), entity.getKana(), entity.getDetail(), entity.getTag());
+            dao.update(myDictionary.getWordId(), entity.getWord(), entity.getKana(), entity.getDetail(), entity.getTag1(), entity.getTag2(), entity.getTag3());
             updateDictionaryTime();
 
             List<WordEntity> wordList = myDictionary.getWordList();

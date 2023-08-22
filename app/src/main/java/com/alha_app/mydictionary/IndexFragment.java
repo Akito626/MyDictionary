@@ -61,7 +61,9 @@ public class IndexFragment extends Fragment {
                     item.put("list_detail_text", entity.getDetail());
                     item.put("id", entity.getId());
                     item.put("kana", entity.getKana());
-                    item.put("tag", entity.getTag());
+                    item.put("tag1", entity.getTag1());
+                    item.put("tag2", entity.getTag2());
+                    item.put("tag3", entity.getTag3());
                     searchListData.add(item);
                 }
             }
