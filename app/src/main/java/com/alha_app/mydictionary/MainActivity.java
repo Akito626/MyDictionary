@@ -218,9 +218,6 @@ public class MainActivity extends AppCompatActivity {
             dictionaryList = dao.getAll();
 
             dictionaryList.sort(Comparator.comparing(DictionaryEntity::getId));
-            for(DictionaryEntity entity: dictionaryList){
-                System.out.println(entity.getId() + " " + entity.getTitle());
-            }
 
             handler.post(() -> prepareList());
         });
