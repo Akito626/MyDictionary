@@ -199,4 +199,10 @@ public class WordListFragment extends Fragment {
         adapter.notifyDataSetChanged();
         activity.deleteWord(id);
     }
+
+    public void updateList(){
+        if(myDictionary == null) return;
+        wordList = myDictionary.getWordList();
+        handler.post(() -> prepareSearchList());
+    }
 }
