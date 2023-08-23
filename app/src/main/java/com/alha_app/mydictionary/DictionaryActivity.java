@@ -185,6 +185,7 @@ public class DictionaryActivity extends AppCompatActivity {
                                     .setCancelable(false)
                                     .show();
                         })
+                        .setNegativeButton("キャンセル", null)
                         .setPositiveButton("OK", (dialog13, which) -> {
                             if(tags.get(choicePosition).equals(tagText1.getText().toString()) || tags.get(choicePosition).equals(tagText2.getText().toString())
                                     || tags.get(choicePosition).equals(tagText3.getText().toString())){
