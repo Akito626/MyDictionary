@@ -89,13 +89,13 @@ public class DictionaryActivity extends AppCompatActivity {
 
         TabLayout tabLayout = findViewById(R.id.tab_layout);
         new TabLayoutMediator(tabLayout, pager, ((tab, position) -> {
-            if(position == 0){
+            if (position == 0) {
                 tab.setText("単語一覧");
-            } else if(position == 1){
+            } else if (position == 1) {
                 tab.setText("日本語索引");
-            } else if(position == 2){
+            } else if (position == 2) {
                 tab.setText("英語索引");
-            } else if(position == 3){
+            } else if (position == 3) {
                 tab.setText("タグ");
             }
         })).attach();
@@ -103,12 +103,14 @@ public class DictionaryActivity extends AppCompatActivity {
         // 五十音順にソートするComparator
         japaneseComparator = (w1, w2) -> collator.compare(w1.getWord(), w2.getWord());
     }
+
     @Override
     public void onResume() {
         super.onResume();
 
         loadDB();
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_dictionary, menu);
@@ -137,7 +139,7 @@ public class DictionaryActivity extends AppCompatActivity {
 
             Button tagButton = dialog.findViewById(R.id.tag_button);
             tagButton.setOnClickListener(v -> {
-                if(tagCount >= MAX_TAG) {
+                if (tagCount >= MAX_TAG) {
                     Toast.makeText(myDictionary, "タグは3つまでしか追加できません", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -158,13 +160,13 @@ public class DictionaryActivity extends AppCompatActivity {
                                     .setView(editText)
                                     .setNegativeButton("キャンセル", null)
                                     .setPositiveButton("OK", (dialog2, which1) -> {
-                                        if(tags.contains(editText.getText().toString())) {
+                                        if (tags.contains(editText.getText().toString())) {
                                             Toast.makeText(myDictionary, "既に存在するタグです", Toast.LENGTH_SHORT).show();
                                             return;
                                         }
                                         tags.add(editText.getText().toString());
                                         Collections.sort(tags, collator);
-                                        switch (tagCount){
+                                        switch (tagCount) {
                                             case 0:
                                                 tagText1.setText(editText.getText().toString());
                                                 deleteButton1.setVisibility(View.VISIBLE);
@@ -187,12 +189,12 @@ public class DictionaryActivity extends AppCompatActivity {
                         })
                         .setNegativeButton("キャンセル", null)
                         .setPositiveButton("OK", (dialog13, which) -> {
-                            if(tags.get(choicePosition).equals(tagText1.getText().toString()) || tags.get(choicePosition).equals(tagText2.getText().toString())
-                                    || tags.get(choicePosition).equals(tagText3.getText().toString())){
+                            if (tags.get(choicePosition).equals(tagText1.getText().toString()) || tags.get(choicePosition).equals(tagText2.getText().toString())
+                                    || tags.get(choicePosition).equals(tagText3.getText().toString())) {
                                 Toast.makeText(myDictionary, "すでについているタグです", Toast.LENGTH_SHORT).show();
                                 return;
                             }
-                            switch (tagCount){
+                            switch (tagCount) {
                                 case 0:
                                     tagText1.setText(tags.get(choicePosition));
                                     deleteButton1.setVisibility(View.VISIBLE);
@@ -227,13 +229,13 @@ public class DictionaryActivity extends AppCompatActivity {
                 WordEntity entity = new WordEntity(myDictionary.getId(), wordText.getText().toString(),
                         kanaText.getText().toString(), detailText.getText().toString());
 
-                if(!tagText1.getText().toString().equals("")){
+                if (!tagText1.getText().toString().equals("")) {
                     entity.setTag1(tagText1.getText().toString().trim());
                 }
-                if(!tagText2.getText().toString().equals("")){
+                if (!tagText2.getText().toString().equals("")) {
                     entity.setTag2(tagText2.getText().toString().trim());
                 }
-                if(!tagText3.getText().toString().equals("")){
+                if (!tagText3.getText().toString().equals("")) {
                     entity.setTag3(tagText3.getText().toString().trim());
                 }
 
@@ -247,7 +249,7 @@ public class DictionaryActivity extends AppCompatActivity {
                 tagText2.setText(tagText3.getText().toString());
                 tagText3.setText("");
 
-                switch (tagCount){
+                switch (tagCount) {
                     case 1:
                         deleteButton1.setVisibility(View.INVISIBLE);
                         break;
@@ -265,7 +267,7 @@ public class DictionaryActivity extends AppCompatActivity {
                 tagText2.setText(tagText3.getText().toString());
                 tagText3.setText("");
 
-                switch (tagCount){
+                switch (tagCount) {
                     case 2:
                         deleteButton2.setVisibility(View.INVISIBLE);
                         break;
@@ -298,19 +300,19 @@ public class DictionaryActivity extends AppCompatActivity {
 
             Button button = dialog.findViewById(R.id.close_button);
             button.setOnClickListener(v -> {
-                if(!isEdit) dialog.dismiss();
+                if (!isEdit) dialog.dismiss();
             });
 
             ImageButton editButton = dialog.findViewById(R.id.edit_button);
             editButton.setOnClickListener(v -> {
-                if(isEdit) {
+                if (isEdit) {
                     isEdit = false;
                     titleText.setBackgroundColor(Color.parseColor("#00000000"));
                     detailText.setBackgroundColor(Color.parseColor("#00000000"));
                     titleText.setEnabled(false);
                     detailText.setEnabled(false);
 
-                    if(titleText.getText().toString().equals(myDictionary.getTitle()) && detailText.getText().toString().equals(myDictionary.getDetail())){
+                    if (titleText.getText().toString().equals(myDictionary.getTitle()) && detailText.getText().toString().equals(myDictionary.getDetail())) {
                         return;
                     }
 
@@ -334,7 +336,8 @@ public class DictionaryActivity extends AppCompatActivity {
         }
         return true;
     }
-    public void setFragmentList(List<Fragment> fragmentList){
+
+    public void setFragmentList(List<Fragment> fragmentList) {
         this.fragmentList = fragmentList;
     }
 
@@ -343,12 +346,12 @@ public class DictionaryActivity extends AppCompatActivity {
             AppDatabase db = Room.databaseBuilder(getApplication(),
                     AppDatabase.class, "WORD_DATA").build();
             WordDao dao = db.wordDao();
-            int id = (int)dao.insert(entity);
+            int id = (int) dao.insert(entity);
             entity.setId(id);
             myDictionary.addWord(entity);
 
             Fragment fragment;
-            switch (pager.getCurrentItem()){
+            switch (pager.getCurrentItem()) {
                 case 0:
                     fragment = fragmentList.get(0);
                     WordListFragment wordFragment = (WordListFragment) fragment;
@@ -366,6 +369,7 @@ public class DictionaryActivity extends AppCompatActivity {
             handler.post(() -> Toast.makeText(myDictionary, "登録しました", Toast.LENGTH_SHORT).show());
         });
     }
+
     public void loadDB() {
         executor.execute(() -> {
             AppDatabase db = Room.databaseBuilder(getApplication(),
@@ -375,14 +379,15 @@ public class DictionaryActivity extends AppCompatActivity {
             Collections.sort(wordList, japaneseComparator);
             myDictionary.setWordList(wordList);
 
-            for(WordEntity entity: wordList){
-                if(!entity.getTag1().equals("") && !tags.contains(entity.getTag1())){
+            tags.clear();
+            for (WordEntity entity : wordList) {
+                if (!entity.getTag1().equals("") && !tags.contains(entity.getTag1())) {
                     tags.add(entity.getTag1());
                 }
-                if(!entity.getTag2().equals("") && !tags.contains(entity.getTag2())){
+                if (!entity.getTag2().equals("") && !tags.contains(entity.getTag2())) {
                     tags.add(entity.getTag2());
                 }
-                if(!entity.getTag3().equals("") && !tags.contains(entity.getTag3())){
+                if (!entity.getTag3().equals("") && !tags.contains(entity.getTag3())) {
                     tags.add(entity.getTag3());
                 }
             }
@@ -390,14 +395,26 @@ public class DictionaryActivity extends AppCompatActivity {
             Collections.sort(tags, collator);
             myDictionary.setTags(tags);
 
-            if(fragmentList != null){
-                WordListFragment wordFragment = (WordListFragment) fragmentList.get(0);
-                wordFragment.updateList();
+            if(fragmentList != null) {
+                Fragment fragment;
+                switch (pager.getCurrentItem()) {
+                    case 0:
+                        fragment = fragmentList.get(0);
+                        WordListFragment wordFragment = (WordListFragment) fragment;
+                        wordFragment.updateList();
+                        break;
+                    case 3:
+                        System.out.println("call");
+                        fragment = fragmentList.get(3);
+                        TagListFragment tagListFragment = (TagListFragment) fragment;
+                        tagListFragment.callPrepareList();
+                        break;
+                }
             }
         });
     }
 
-    public void deleteWord(int id){
+    public void deleteWord(int id) {
         executor.execute(() -> {
             AppDatabase db = Room.databaseBuilder(getApplication(),
                     AppDatabase.class, "WORD_DATA").build();
@@ -408,7 +425,7 @@ public class DictionaryActivity extends AppCompatActivity {
         });
     }
 
-    private void updateDictionary(DictionaryEntity entity){
+    private void updateDictionary(DictionaryEntity entity) {
         executor.execute(() -> {
             AppDatabase db = Room.databaseBuilder(getApplication(),
                     AppDatabase.class, "DICTIONARY_DATA").build();
@@ -419,7 +436,7 @@ public class DictionaryActivity extends AppCompatActivity {
         });
     }
 
-    private void updateDictionaryTime(){
+    private void updateDictionaryTime() {
         executor.execute(() -> {
             AppDatabase db = Room.databaseBuilder(getApplication(),
                     AppDatabase.class, "DICTIONARY_DATA").build();
