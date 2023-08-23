@@ -90,7 +90,6 @@ public class TagListFragment extends Fragment {
     public void onResume(){
         super.onResume();
 
-        wordList = myDictionary.getWordList();
         tags = myDictionary.getTags();
         prepareList();
     }
@@ -111,8 +110,9 @@ public class TagListFragment extends Fragment {
         tagsList.setAdapter(tagsAdapter);
 
         tagsList.setOnItemClickListener((parent, view, position, id) -> {
-            String tag = listData.get(position);
+            wordList = myDictionary.getWordList();
 
+            String tag = listData.get(position);
             List<Map<String, Object>> searchListData = new ArrayList<>();
             for(WordEntity entity: wordList){
                 if(entity.getTag1().equals(tag) || entity.getTag2().equals(tag) || entity.getTag3().equals(tag)) {
