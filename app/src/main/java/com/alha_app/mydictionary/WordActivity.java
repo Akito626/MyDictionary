@@ -180,6 +180,8 @@ public class WordActivity extends AppCompatActivity {
 
             Button b = (Button) v;
             String tag = b.getText().toString();
+            if(tag.equals("")) return;
+
             List<WordEntity> wordList = myDictionary.getWordList();
             List<Map<String, Object>> searchListData = new ArrayList<>();
             for(WordEntity entity: wordList){
