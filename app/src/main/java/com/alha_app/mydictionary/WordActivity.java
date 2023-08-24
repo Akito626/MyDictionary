@@ -47,7 +47,9 @@ public class WordActivity extends AppCompatActivity {
     private final Collator collator = Collator.getInstance(Locale.JAPANESE);
     private MyDictionary myDictionary;
     private boolean isEdit;
+    private List<WordEntity> wordList;
     private List<String> tags;
+    private int wordID;
     private int choicePosition;
     private int tagCount;
     private boolean isSave;
@@ -66,7 +68,9 @@ public class WordActivity extends AppCompatActivity {
 
         isEdit = false;
         isSave = false;
+        wordList = myDictionary.getWordList();
         tags = myDictionary.getTags();
+        wordID = myDictionary.getWordId();
 
         // テキストをセット
         EditText wordText = findViewById(R.id.word_text);
@@ -182,7 +186,6 @@ public class WordActivity extends AppCompatActivity {
             String tag = b.getText().toString();
             if(tag.equals("")) return;
 
-            List<WordEntity> wordList = myDictionary.getWordList();
             List<Map<String, Object>> searchListData = new ArrayList<>();
             for(WordEntity entity: wordList){
                 if(entity.getTag1().equals(tag) || entity.getTag2().equals(tag) || entity.getTag3().equals(tag)) {
@@ -368,11 +371,18 @@ public class WordActivity extends AppCompatActivity {
             AppDatabase db = Room.databaseBuilder(getApplication(),
                     AppDatabase.class, "WORD_DATA").build();
             WordDao dao = db.wordDao();
-            dao.update(myDictionary.getWordId(), entity.getWord(), entity.getKana(), entity.getDetail(), entity.getTag1(), entity.getTag2(), entity.getTag3());
+            dao.update(wordID, entity.getWord(), entity.getKana(), entity.getDetail(), entity.getTag1(), entity.getTag2(), entity.getTag3());
             updateDictionaryTime();
 
-            isSave = false;
+            for(int i = 0; i < wordList.size(); i++){
+                if(wordList.get(i).getId() == wordID){
+                    wordList.set(i, entity);
+                    break;
+                }
+            }
+            myDictionary.setWordList(wordList);
 
+            isSave = false;
             ProgressBar bar = findViewById(R.id.loading_bar);
 
             handler.post(() -> {

@@ -19,6 +19,7 @@ import android.widget.SimpleAdapter;
 import com.alha_app.mydictionary.database.AppDatabase;
 import com.alha_app.mydictionary.database.DictionaryDao;
 import com.alha_app.mydictionary.database.WordDao;
+import com.alha_app.mydictionary.database.WordEntity;
 
 import java.util.List;
 import java.util.Map;
