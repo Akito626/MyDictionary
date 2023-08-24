@@ -28,6 +28,7 @@ import com.alha_app.mydictionary.database.DictionaryDao;
 import com.alha_app.mydictionary.database.DictionaryEntity;
 import com.alha_app.mydictionary.database.WordDao;
 import com.alha_app.mydictionary.database.WordEntity;
+import com.alha_app.mydictionary.model.SearchNum;
 
 import java.text.Collator;
 import java.util.ArrayList;
@@ -186,23 +187,8 @@ public class WordActivity extends AppCompatActivity {
             String tag = b.getText().toString();
             if(tag.equals("")) return;
 
-            List<Map<String, Object>> searchListData = new ArrayList<>();
-            for(WordEntity entity: wordList){
-                if(entity.getTag1().equals(tag) || entity.getTag2().equals(tag) || entity.getTag3().equals(tag)) {
-                    Map<String, Object> item = new HashMap<>();
-                    item.put("list_title_text", entity.getWord());
-                    item.put("list_detail_text", entity.getDetail());
-                    item.put("id", entity.getId());
-                    item.put("kana", entity.getKana());
-                    item.put("tag1", entity.getTag1());
-                    item.put("tag2", entity.getTag2());
-                    item.put("tag3", entity.getTag3());
-                    searchListData.add(item);
-                }
-            }
-
             myDictionary.setSearchString(tag);
-            myDictionary.setSearchList(searchListData);
+            myDictionary.setSearchNum(SearchNum.Tag);
 
             startActivity(new Intent(myDictionary, SearchResultsActivity.class));
         };

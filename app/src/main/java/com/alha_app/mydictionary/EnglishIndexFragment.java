@@ -10,6 +10,7 @@ import android.widget.Button;
 import androidx.fragment.app.Fragment;
 
 import com.alha_app.mydictionary.database.WordEntity;
+import com.alha_app.mydictionary.model.SearchNum;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,7 +20,6 @@ import java.util.Map;
 public class EnglishIndexFragment extends Fragment {
     private DictionaryActivity activity;
     private MyDictionary myDictionary;
-    private List<WordEntity> wordList = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,28 +44,9 @@ public class EnglishIndexFragment extends Fragment {
     private void prepareButton(){
         // 索引のボタン全てにlistenerをセット
         View.OnClickListener listener = v -> {
-            wordList = myDictionary.getWordList();
-
             Button button = (Button) v;
-
-            List<Map<String, Object>> searchListData = new ArrayList<>();
-            for(WordEntity entity: wordList){
-                String word = entity.getWord().toUpperCase();
-                String kana = entity.getKana().toUpperCase();
-                if(word.startsWith(button.getText().toString()) || kana.startsWith(button.getText().toString())) {
-                    Map<String, Object> item = new HashMap<>();
-                    item.put("list_title_text", entity.getWord());
-                    item.put("list_detail_text", entity.getDetail());
-                    item.put("id", entity.getId());
-                    item.put("kana", entity.getKana());
-                    item.put("tag1", entity.getTag1());
-                    item.put("tag2", entity.getTag2());
-                    item.put("tag3", entity.getTag3());
-                    searchListData.add(item);
-                }
-            }
             myDictionary.setSearchString(button.getText().toString());
-            myDictionary.setSearchList(searchListData);
+            myDictionary.setSearchNum(SearchNum.EnglishIndex);
 
             startActivity(new Intent(myDictionary, SearchResultsActivity.class));
         };

@@ -21,6 +21,8 @@ import com.alha_app.mydictionary.database.DictionaryDao;
 import com.alha_app.mydictionary.database.WordDao;
 import com.alha_app.mydictionary.database.WordEntity;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -29,9 +31,12 @@ import java.util.concurrent.Executors;
 public class SearchResultsActivity extends AppCompatActivity {
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final Handler handler = new Handler();
+    private static final String dakuon = "がぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽ";
+    private static final String seion = "かきくけこさしすせそたちつてとはひふへほはひふへほ";
     private MyDictionary myDictionary;
-    private List<Map<String, Object>> listData;
+    private List<Map<String, Object>> listData = new ArrayList<>();
     private SimpleAdapter adapter;
+    private String searchStr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,12 +44,14 @@ public class SearchResultsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search_results);
 
         myDictionary = (MyDictionary) this.getApplication();
+        searchStr = myDictionary.getSearchString();
 
         Toolbar toolbar = findViewById(R.id.toolbar_search);
         toolbar.setTitle("「" + myDictionary.getSearchString() + "」の単語");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        prepareListData();
         prepareList();
     }
 
@@ -74,8 +81,72 @@ public class SearchResultsActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        prepareListData();
+        adapter.notifyDataSetChanged();
+    }
+
+    private void prepareListData(){
+        List<WordEntity> wordList = myDictionary.getWordList();
+
+        listData.clear();
+        switch (myDictionary.getSearchNum()){
+            case Index:
+                for(WordEntity entity: wordList){
+                    String word = convVoicedSound(entity.getWord());
+                    String kana = convVoicedSound(entity.getKana());
+                    if(word.startsWith(searchStr) || kana.startsWith(searchStr)) {
+                        Map<String, Object> item = new HashMap<>();
+                        item.put("list_title_text", entity.getWord());
+                        item.put("list_detail_text", entity.getDetail());
+                        item.put("id", entity.getId());
+                        item.put("kana", entity.getKana());
+                        item.put("tag1", entity.getTag1());
+                        item.put("tag2", entity.getTag2());
+                        item.put("tag3", entity.getTag3());
+                        listData.add(item);
+                    }
+                }
+                break;
+            case EnglishIndex:
+                for(WordEntity entity: wordList){
+                    String word = entity.getWord().toUpperCase();
+                    String kana = entity.getKana().toUpperCase();
+                    if(word.startsWith(searchStr) || kana.startsWith(searchStr)) {
+                        Map<String, Object> item = new HashMap<>();
+                        item.put("list_title_text", entity.getWord());
+                        item.put("list_detail_text", entity.getDetail());
+                        item.put("id", entity.getId());
+                        item.put("kana", entity.getKana());
+                        item.put("tag1", entity.getTag1());
+                        item.put("tag2", entity.getTag2());
+                        item.put("tag3", entity.getTag3());
+                        listData.add(item);
+                    }
+                }
+                break;
+            case Tag:
+                for(WordEntity entity: wordList){
+                    if(entity.getTag1().equals(searchStr) || entity.getTag2().equals(searchStr) || entity.getTag3().equals(searchStr)) {
+                        Map<String, Object> item = new HashMap<>();
+                        item.put("list_title_text", entity.getWord());
+                        item.put("list_detail_text", entity.getDetail());
+                        item.put("id", entity.getId());
+                        item.put("kana", entity.getKana());
+                        item.put("tag1", entity.getTag1());
+                        item.put("tag2", entity.getTag2());
+                        item.put("tag3", entity.getTag3());
+                        listData.add(item);
+                    }
+                }
+                break;
+        }
+    }
+
     private void prepareList(){
-        listData = myDictionary.getSearchList();
         ListView searchList = findViewById(R.id.search_list);
         adapter = new SimpleAdapter(
                 this,
@@ -99,6 +170,18 @@ public class SearchResultsActivity extends AppCompatActivity {
         });
 
         registerForContextMenu(searchList);
+    }
+
+    // 濁音を清音に変換
+    private String convVoicedSound(String str){
+        for(int i = 0; i < dakuon.length(); i++){
+            String s1 = dakuon.substring(i, i+1);
+            String s2 = seion.substring(i, i+1);
+
+            str = str.replaceAll(s1, s2);
+        }
+
+        return str;
     }
 
     private void deleteWord(int id, int position){
