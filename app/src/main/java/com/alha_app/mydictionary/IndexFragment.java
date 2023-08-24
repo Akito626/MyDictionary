@@ -10,6 +10,7 @@ import android.widget.Button;
 import androidx.fragment.app.Fragment;
 
 import com.alha_app.mydictionary.database.WordEntity;
+import com.alha_app.mydictionary.model.SearchNum;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,12 +18,8 @@ import java.util.List;
 import java.util.Map;
 
 public class IndexFragment extends Fragment {
-    private static final String dakuon = "がぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽ";
-    private static final String seion = "かきくけこさしすせそたちつてとはひふへほはひふへほ";
-
     private DictionaryActivity activity;
     private MyDictionary myDictionary;
-    private List<WordEntity> wordList = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,28 +44,9 @@ public class IndexFragment extends Fragment {
     private void prepareButton(){
         // 索引のボタン全てにlistenerをセット
         View.OnClickListener listener = v -> {
-            wordList = myDictionary.getWordList();
-
             Button button = (Button) v;
-
-            List<Map<String, Object>> searchListData = new ArrayList<>();
-            for(WordEntity entity: wordList){
-                String word = convVoicedSound(entity.getWord());
-                String kana = convVoicedSound(entity.getKana());
-                if(word.startsWith(button.getText().toString()) || kana.startsWith(button.getText().toString())) {
-                    Map<String, Object> item = new HashMap<>();
-                    item.put("list_title_text", entity.getWord());
-                    item.put("list_detail_text", entity.getDetail());
-                    item.put("id", entity.getId());
-                    item.put("kana", entity.getKana());
-                    item.put("tag1", entity.getTag1());
-                    item.put("tag2", entity.getTag2());
-                    item.put("tag3", entity.getTag3());
-                    searchListData.add(item);
-                }
-            }
             myDictionary.setSearchString(button.getText().toString());
-            myDictionary.setSearchList(searchListData);
+            myDictionary.setSearchNum(SearchNum.Index);
 
             startActivity(new Intent(myDictionary, SearchResultsActivity.class));
         };
@@ -119,17 +97,5 @@ public class IndexFragment extends Fragment {
         getView().findViewById(R.id.button44).setOnClickListener(listener);
         getView().findViewById(R.id.button45).setOnClickListener(listener);
         getView().findViewById(R.id.button46).setOnClickListener(listener);
-    }
-
-    // 濁音を清音に変換
-    private String convVoicedSound(String str){
-        for(int i = 0; i < dakuon.length(); i++){
-            String s1 = dakuon.substring(i, i+1);
-            String s2 = seion.substring(i, i+1);
-
-            str = str.replaceAll(s1, s2);
-        }
-
-        return str;
     }
 }

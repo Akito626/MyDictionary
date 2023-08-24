@@ -3,6 +3,7 @@ package com.alha_app.mydictionary;
 import android.app.Application;
 
 import com.alha_app.mydictionary.database.WordEntity;
+import com.alha_app.mydictionary.model.SearchNum;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +27,8 @@ public class MyDictionary extends Application {
     private List<String> tags;
 
     // 検索データ
+    private SearchNum searchNum;
     private String searchString;
-    private List<Map<String, Object>> searchList;
 
     // Getter
     public int getId() {
@@ -78,12 +79,12 @@ public class MyDictionary extends Application {
         return tags;
     }
 
-    public String getSearchString() {
-        return searchString;
+    public SearchNum getSearchNum() {
+        return searchNum;
     }
 
-    public List<Map<String, Object>> getSearchList() {
-        return searchList;
+    public String getSearchString() {
+        return searchString;
     }
 
     // Setter
@@ -135,14 +136,15 @@ public class MyDictionary extends Application {
         this.tags = tags;
     }
 
+    public void setSearchNum(SearchNum searchNum) {
+        this.searchNum = searchNum;
+    }
+
     public void setSearchString(String searchString) {
         this.searchString = searchString;
     }
 
-    public void setSearchList(List<Map<String, Object>> searchList) {
-        this.searchList = searchList;
-    }
-
+    // 単語リストを操作
     public void addWord(WordEntity entity){
         wordList.add(entity);
     }
