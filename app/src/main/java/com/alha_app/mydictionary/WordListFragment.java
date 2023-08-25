@@ -110,7 +110,6 @@ public class WordListFragment extends Fragment {
     }
 
     private void prepareList() {
-        listData.clear();
         for (WordEntity entity : wordList) {
             Map<String, Object> item = new HashMap<>();
             item.put("list_title_text", entity.getWord());
@@ -156,7 +155,7 @@ public class WordListFragment extends Fragment {
         SearchView searchView = getView().findViewById(R.id.search_view);
         String newText = searchView.getQuery().toString();
         if (newText.equals("")) {
-            prepareList();
+            prepareListData();
             return;
         }
         listData.clear();
@@ -172,6 +171,22 @@ public class WordListFragment extends Fragment {
                 item.put("tag3", entity.getTag3());
                 listData.add(item);
             }
+        }
+        adapter.notifyDataSetChanged();
+    }
+
+    private void prepareListData(){
+        listData.clear();
+        for (WordEntity entity : wordList) {
+            Map<String, Object> item = new HashMap<>();
+            item.put("list_title_text", entity.getWord());
+            item.put("list_detail_text", entity.getDetail());
+            item.put("id", entity.getId());
+            item.put("kana", entity.getKana());
+            item.put("tag1", entity.getTag1());
+            item.put("tag2", entity.getTag2());
+            item.put("tag3", entity.getTag3());
+            listData.add(item);
         }
         adapter.notifyDataSetChanged();
     }

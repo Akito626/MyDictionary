@@ -68,7 +68,7 @@ public class TagListFragment extends Fragment {
             @Override
             public boolean onQueryTextChange(String newText) {
                 if(newText.equals("")){
-                    prepareList();
+                    prepareListData();
                 } else {
                     listData.clear();
                     for(String s: tags){
@@ -90,12 +90,10 @@ public class TagListFragment extends Fragment {
         super.onResume();
 
         tags = myDictionary.getTags();
-        prepareList();
+        prepareListData();
     }
 
     private void prepareList() {
-        listData.clear();
-
         for(String s: tags){
             listData.add(s);
         }
@@ -117,7 +115,15 @@ public class TagListFragment extends Fragment {
         });
     }
 
-    public void callPrepareList(){
-        handler.post(() -> prepareList());
+    private void prepareListData(){
+        listData.clear();
+        for(String s: tags){
+            listData.add(s);
+        }
+        tagsAdapter.notifyDataSetChanged();
+    }
+
+    public void updateList(){
+        handler.post(() -> prepareListData());
     }
 }
