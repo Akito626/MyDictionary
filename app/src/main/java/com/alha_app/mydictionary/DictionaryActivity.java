@@ -360,7 +360,7 @@ public class DictionaryActivity extends AppCompatActivity {
                 case 3:
                     fragment = fragmentList.get(3);
                     TagListFragment tagListFragment = (TagListFragment) fragment;
-                    tagListFragment.callPrepareList();
+                    tagListFragment.updateList();
                     break;
             }
 
@@ -407,7 +407,7 @@ public class DictionaryActivity extends AppCompatActivity {
                         System.out.println("call");
                         fragment = fragmentList.get(3);
                         TagListFragment tagListFragment = (TagListFragment) fragment;
-                        tagListFragment.callPrepareList();
+                        tagListFragment.updateList();
                         break;
                 }
             }
