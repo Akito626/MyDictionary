@@ -3,6 +3,7 @@ package com.alha_app.mydictionary;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.DialogFragment;
 import androidx.room.Room;
 
 import android.app.AlertDialog;
@@ -12,14 +13,19 @@ import android.graphics.Color;
 import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
+import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +35,7 @@ import com.alha_app.mydictionary.database.DictionaryEntity;
 import com.alha_app.mydictionary.database.WordDao;
 import com.alha_app.mydictionary.database.WordEntity;
 import com.alha_app.mydictionary.model.SearchNum;
+import com.alha_app.mydictionary.model.TTSSettingDialog;
 
 import java.text.Collator;
 import java.util.ArrayList;
@@ -41,7 +48,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class WordActivity extends AppCompatActivity {
+public class WordActivity extends AppCompatActivity implements TextToSpeech.OnInitListener {
     private final int MAX_TAG = 3;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final Handler handler = new Handler();
@@ -54,6 +61,7 @@ public class WordActivity extends AppCompatActivity {
     private int choicePosition;
     private int tagCount;
     private boolean isSave;
+    private TextToSpeech tts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -235,6 +243,70 @@ public class WordActivity extends AppCompatActivity {
             deleteButton3.setVisibility(View.INVISIBLE);
             tagCount--;
         });
+
+        tts = new TextToSpeech(this, this);
+
+        ImageButton ttsButton = findViewById(R.id.tts_button);
+        ttsButton.setOnClickListener(v -> {
+            String str = wordText.getText().toString();
+            if(0 < str.length()){
+                if(tts.isSpeaking()){
+                    tts.stop();
+                    return;
+                }
+
+                tts.setLanguage(Locale.ENGLISH);
+                tts.speak(str, TextToSpeech.QUEUE_FLUSH, null, "messageID");
+                setTtsListener();
+            }
+        });
+
+        ImageButton settingButton = findViewById(R.id.setting_button);
+        settingButton.setOnClickListener(v -> {
+            DialogFragment dialogFragment = new TTSSettingDialog(this);
+            dialogFragment.show(getSupportFragmentManager(), "tts_dialog");
+        });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        tts.shutdown();
+    }
+
+    @Override
+    public void onInit(int status){
+        // TTS初期化
+        if (TextToSpeech.SUCCESS == status) {
+            Log.d("debug", "initialized");
+        } else {
+            Log.e("debug", "failed to initialize");
+        }
+    }
+
+    // 読み上げの始まりと終わりを取得
+    private void setTtsListener(){
+        int listenerResult =
+                tts.setOnUtteranceProgressListener(new UtteranceProgressListener() {
+                    @Override
+                    public void onDone(String utteranceId) {
+                        Log.d("debug","progress on Done " + utteranceId);
+                    }
+
+                    @Override
+                    public void onError(String utteranceId) {
+                        Log.d("debug","progress on Error " + utteranceId);
+                    }
+
+                    @Override
+                    public void onStart(String utteranceId) {
+                        Log.d("debug","progress on Start " + utteranceId);
+                    }
+                });
+
+        if (listenerResult != TextToSpeech.SUCCESS) {
+            Log.e("debug", "failed to add utterance progress listener");
+        }
     }
 
     @Override
@@ -350,6 +422,10 @@ public class WordActivity extends AppCompatActivity {
             startActivity(intent);
         }
         return true;
+    }
+
+    public void saveTTSSettings(){
+
     }
 
     private void updateDB(WordEntity entity) {
