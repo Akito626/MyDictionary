@@ -255,7 +255,6 @@ public class WordActivity extends AppCompatActivity implements TextToSpeech.OnIn
                     return;
                 }
 
-                tts.setLanguage(Locale.ENGLISH);
                 tts.speak(str, TextToSpeech.QUEUE_FLUSH, null, "messageID");
                 setTtsListener();
             }
@@ -424,8 +423,8 @@ public class WordActivity extends AppCompatActivity implements TextToSpeech.OnIn
         return true;
     }
 
-    public void saveTTSSettings(){
-
+    public void saveTTSSettings(Locale language){
+        tts.setLanguage(language);
     }
 
     private void updateDB(WordEntity entity) {
