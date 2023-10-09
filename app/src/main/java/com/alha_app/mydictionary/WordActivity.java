@@ -7,10 +7,8 @@ import androidx.fragment.app.DialogFragment;
 import androidx.room.Room;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
 import android.speech.tts.TextToSpeech;
@@ -20,18 +18,14 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alha_app.mydictionary.database.AppDatabase;
 import com.alha_app.mydictionary.database.DictionaryDao;
-import com.alha_app.mydictionary.database.DictionaryEntity;
 import com.alha_app.mydictionary.database.WordDao;
 import com.alha_app.mydictionary.database.WordEntity;
 import com.alha_app.mydictionary.model.SearchNum;
@@ -40,11 +34,8 @@ import com.alha_app.mydictionary.model.TTSSettingDialog;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -62,6 +53,7 @@ public class WordActivity extends AppCompatActivity implements TextToSpeech.OnIn
     private int tagCount;
     private boolean isSave;
     private TextToSpeech tts;
+    private ArrayList<Locale> locales;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -244,7 +236,11 @@ public class WordActivity extends AppCompatActivity implements TextToSpeech.OnIn
             tagCount--;
         });
 
+        locales = myDictionary.getLocales();
         tts = new TextToSpeech(this, this);
+        tts.setLanguage(locales.get(myDictionary.getTTSLanguage()));
+        tts.setSpeechRate(myDictionary.getTTSSpeed());
+        tts.setPitch(myDictionary.getTTSPitch());
 
         ImageButton ttsButton = findViewById(R.id.tts_button);
         ttsButton.setOnClickListener(v -> {
@@ -262,7 +258,13 @@ public class WordActivity extends AppCompatActivity implements TextToSpeech.OnIn
 
         ImageButton settingButton = findViewById(R.id.setting_button);
         settingButton.setOnClickListener(v -> {
-            DialogFragment dialogFragment = new TTSSettingDialog(this);
+            DialogFragment dialogFragment = new TTSSettingDialog(
+                    this,
+                    locales,
+                    myDictionary.getTTSLanguage(),
+                    myDictionary.getTTSSpeed(),
+                    myDictionary.getTTSPitch()
+            );
             dialogFragment.show(getSupportFragmentManager(), "tts_dialog");
         });
     }
@@ -423,8 +425,14 @@ public class WordActivity extends AppCompatActivity implements TextToSpeech.OnIn
         return true;
     }
 
-    public void saveTTSSettings(Locale language){
-        tts.setLanguage(language);
+    public void saveTTSSettings(int language, float speed, float pitch){
+        tts.setLanguage(locales.get(language));
+        tts.setSpeechRate(speed);
+        tts.setPitch(pitch);
+
+        myDictionary.setTTSLanguage(language);
+        myDictionary.setTTSSpeed(speed);
+        myDictionary.setTTSPitch(pitch);
     }
 
     private void updateDB(WordEntity entity) {

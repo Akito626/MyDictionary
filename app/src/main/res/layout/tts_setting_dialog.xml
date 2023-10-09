@@ -2,7 +2,8 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,4 +25,62 @@
             android:layout_weight="0.5"
             android:layout_gravity="center_vertical|left"/>
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:textSize="25sp"
+            android:text="スピード："/>
+
+        <EditText
+            android:id="@+id/speed_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|left"
+            android:backgroundTint="#00000000"
+            android:textSize="25sp"
+            android:inputType="numberDecimal"/>
+    </LinearLayout>
+
+    <SeekBar
+        android:id="@+id/speed_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:max="40"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:textSize="25sp"
+            android:text="ピッチ："/>
+
+        <EditText
+            android:id="@+id/pitch_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|left"
+            android:backgroundTint="#00000000"
+            android:textSize="25sp"
+            android:inputType="numberDecimal"/>
+    </LinearLayout>
+
+    <SeekBar
+        android:id="@+id/pitch_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:max="40"/>
 </LinearLayout>
