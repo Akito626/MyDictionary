@@ -238,9 +238,6 @@ public class WordActivity extends AppCompatActivity implements TextToSpeech.OnIn
 
         locales = myDictionary.getLocales();
         tts = new TextToSpeech(this, this);
-        tts.setLanguage(locales.get(myDictionary.getTTSLanguage()));
-        tts.setSpeechRate(myDictionary.getTTSSpeed());
-        tts.setPitch(myDictionary.getTTSPitch());
 
         ImageButton ttsButton = findViewById(R.id.tts_button);
         ttsButton.setOnClickListener(v -> {
@@ -279,6 +276,9 @@ public class WordActivity extends AppCompatActivity implements TextToSpeech.OnIn
     public void onInit(int status){
         // TTS初期化
         if (TextToSpeech.SUCCESS == status) {
+            tts.setLanguage(locales.get(myDictionary.getTTSLanguage()));
+            tts.setSpeechRate(myDictionary.getTTSSpeed());
+            tts.setPitch(myDictionary.getTTSPitch());
             Log.d("debug", "initialized");
         } else {
             Log.e("debug", "failed to initialize");
